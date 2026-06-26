@@ -1,0 +1,21 @@
+enabled: true
+active_source: bing
+
+tile_sources:
+  bing:
+    url: "https://ecn.t0.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=1"
+    zoom: 20
+    offset:
+      x: 0
+      z: 0
+  osm:
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    zoom: 14
+    offset:
+      x: 0
+      z: 0
+
+max_concurrent_requests: 2
+cache_size: 1000
+surface_block_mask: true
+config_version: "1.0"

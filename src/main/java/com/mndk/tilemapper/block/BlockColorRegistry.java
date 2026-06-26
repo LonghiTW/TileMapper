@@ -28,31 +28,8 @@ public class BlockColorRegistry {
     /** Mapping from CIELabColor ??Material */
     private static final List<Map.Entry<CIELabColor, Material>> colorMappings = new ArrayList<>();
 
-    /** Fallback renames for IDs that changed between 1.12.2 and modern Minecraft */
-    private static final Map<String, String> ID_RENAMES = new HashMap<>();
-    static {
-        ID_RENAMES.put("silver_glazed_terracotta", "light_gray_glazed_terracotta");
-        ID_RENAMES.put("magma", "magma_block");
-        ID_RENAMES.put("quartz_ore", "nether_quartz_ore");
-        ID_RENAMES.put("melon_block", "melon");
-        ID_RENAMES.put("snow", "snow_block");
-        ID_RENAMES.put("slime", "slime_block");
-        ID_RENAMES.put("end_bricks", "end_stone_bricks");
-        ID_RENAMES.put("red_nether_brick", "red_nether_bricks");
-        ID_RENAMES.put("nether_brick", "nether_bricks");
-        ID_RENAMES.put("stonebrick", "stone_bricks");
-        ID_RENAMES.put("hardened_clay", "terracotta");
-        ID_RENAMES.put("stained_hardened_clay", "terracotta"); // color variant fallback
-        ID_RENAMES.put("double_stone_slab", "stone_slab");
-        ID_RENAMES.put("lit_furnace", "furnace");
-        ID_RENAMES.put("lit_redstone_lamp", "redstone_lamp");
-        ID_RENAMES.put("lit_pumpkin", "jack_o_lantern");
-        ID_RENAMES.put("unlit_redstone_torch", "redstone_torch");
-        ID_RENAMES.put("grass", "grass_block");
-        ID_RENAMES.put("log", "oak_log");
-        ID_RENAMES.put("log2", "acacia_log");
-        ID_RENAMES.put("planks", "oak_planks");
-    }
+    // Note: block_data.json is sourced from modern Minecraft assets (v26.1.2),
+    // so its "id" values are already modern texture filenames. No ID_RENAMES needed.
 
     private static boolean initialized = false;
 
@@ -113,27 +90,19 @@ public class BlockColorRegistry {
 
     /**
      * Resolve a block ID string to a Bukkit Material.
-     * Tries direct NamespacedKey lookup first, then falls back to ID_RENAMES map.
+     * The block_data.json uses modern Minecraft texture filenames as IDs,
+     * which in most cases match the registry name directly.
+     * Some entries (face textures, state variants) won't resolve
+     * since they aren't standalone Materials — that's expected.
      */
     private static Material resolveMaterial(String id) {
-        // Try direct lookup first
         NamespacedKey key = NamespacedKey.minecraft(id);
         Material material = Registry.MATERIAL.get(key);
         if (material != null && material.isBlock()) {
             return material;
         }
 
-        // Fallback: check renames
-        String renamed = ID_RENAMES.get(id);
-        if (renamed != null) {
-            key = NamespacedKey.minecraft(renamed);
-            material = Registry.MATERIAL.get(key);
-            if (material != null && material.isBlock()) {
-                return material;
-            }
-        }
-
-        LOGGER.warning("Could not resolve block ID: " + id);
+        LOGGER.fine("Skipped block ID (not a standalone Material): " + id);
         return null;
     }
 

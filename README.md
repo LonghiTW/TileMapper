@@ -18,7 +18,7 @@ Powered by the [Terra--](https://github.com/SmylerMC/terraminusminus) engine and
 ## Requirements
 
 - **Paper 1.21.8+** server
-- **TerraPlusMinus** plugin (installed at `plugins/TerraPlusMinus/`)
+- **TerraPlusMinus** plugin
 - **Java 21+**
 
 ---
@@ -130,10 +130,6 @@ New chunk generated (ChunkLoadEvent, isNewChunk=true)
              └─ Sets block type
 ```
 
-### //regen Compatibility
-
-When WorldEdit's `//regen` regenerates a chunk, T+- re-generates the terrain and TileMapper automatically applies satellite imagery on top via `ChunkLoadEvent (isNewChunk=true)`. No extra setup needed.
-
 ---
 
 ## Dependencies
@@ -159,4 +155,4 @@ When WorldEdit's `//regen` regenerates a chunk, T+- re-generates the terrain and
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the [MIT License](https://github.com/LonghiTW/TileMapper/blob/main/LICENSE.txt).

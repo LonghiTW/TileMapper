@@ -4573,52 +4573,6 @@
     ]
   },
   {
-    "name": "Shroomlight",
-    "texture": "shroomlight.png",
-    "id": "shroomlight",
-    "rgb": [
-      241,
-      156,
-      93
-    ],
-    "lab": [
-      "0.76595735812394527553",
-      "0.07219503070513155762",
-      "0.10669964283768240687"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Shulker Box",
-    "texture": "shulker_box.png",
-    "id": "shulker_box",
-    "rgb": [
-      140,
-      97,
-      140
-    ],
-    "lab": [
-      "0.55298215848644127757",
-      "0.06903933383121918510",
-      "-0.04548435999172434352"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
     "name": "Smooth Basalt",
     "texture": "smooth_basalt.png",
     "id": "smooth_basalt",

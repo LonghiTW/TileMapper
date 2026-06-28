@@ -3107,24 +3107,6 @@
     ]
   },
   {
-    "name": "Ochre Froglight Top",
-    "texture": "ochre_froglight_top.png",
-    "id": "ochre_froglight",
-    "rgb": [
-      250,
-      245,
-      210
-    ],
-    "lab": [
-      "0.96509683258812328788",
-      "-0.00835901345262718420",
-      "0.04508786707646639247"
-    ],
-    "sides": [
-      "top"
-    ]
-  },
-  {
     "name": "Orange Concrete",
     "texture": "orange_concrete.png",
     "id": "orange_concrete",
@@ -3398,24 +3380,6 @@
       "south",
       "east",
       "west"
-    ]
-  },
-  {
-    "name": "Pearlescent Froglight Top",
-    "texture": "pearlescent_froglight_top.png",
-    "id": "pearlescent_froglight",
-    "rgb": [
-      246,
-      241,
-      240
-    ],
-    "lab": [
-      "0.96172983362499786519",
-      "0.00475849855297977298",
-      "0.00286531088456509764"
-    ],
-    "sides": [
-      "top"
     ]
   },
   {
@@ -5076,24 +5040,6 @@
       "south",
       "east",
       "west"
-    ]
-  },
-  {
-    "name": "Verdant Froglight Top",
-    "texture": "verdant_froglight_top.png",
-    "id": "verdant_froglight",
-    "rgb": [
-      231,
-      244,
-      230
-    ],
-    "lab": [
-      "0.95360765347931497615",
-      "-0.01852105837095646690",
-      "0.01377046977373252989"
-    ],
-    "sides": [
-      "top"
     ]
   },
   {

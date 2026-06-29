@@ -1,21 +1,39 @@
 enabled: true
-active_source: bing
+active_source: osm
+
+# Active blockset file (without .json).
+# "custom_blockset" = your local editable copy in blockset/custom_blockset.json
+# Any other name (Default, All, Grayscale, Overworld, Nether&End) =
+# read live from the repository (no local file needed).
+active_blockset: "Default"
 
 tile_sources:
+  osm:
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    zoom: 18
+    offset:
+      x: 0
+      z: 0
   bing:
-    url: "https://ecn.t0.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=1"
+    url: "https://t.ssl.ak.dynamic.tiles.virtualearth.net/comp/ch/{u}?it=A&shading=hill"
     zoom: 20
     offset:
       x: 0
       z: 0
-  osm:
-    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-    zoom: 14
+  yandex:
+    url: "https://core-sat.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}"
+    zoom: 20
     offset:
       x: 0
       z: 0
+  tw:
+    url: "https://wmts.nlsc.gov.tw/wmts/PHOTO2/default/GoogleMapsCompatible/{z}/{y}/{x}.png"
+    zoom: 20
+    offset:
+      x: -0.625
+      z: 0.3125
 
 max_concurrent_requests: 2
 cache_size: 1000
-surface_block_mask: true
+surface_block_mask: false
 config_version: "1.0"

@@ -11,10 +11,12 @@ public class PluginConfig {
 
     private static final Map<String, TileSource> DEFAULT_SOURCES = new LinkedHashMap<>();
     static {
-        DEFAULT_SOURCES.put("bing", new TileSource(
-                "https://ecn.t0.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=1", 20, 0, 0));
         DEFAULT_SOURCES.put("osm", new TileSource(
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png", 14, 0, 0));
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png", 16, 0, 0));
+        DEFAULT_SOURCES.put("bing", new TileSource(
+                "https://t.ssl.ak.dynamic.tiles.virtualearth.net/comp/ch/{u}?it=A&shading=hill", 20, 0, 0));
+        DEFAULT_SOURCES.put("yandex", new TileSource(
+                "https://core-sat.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}", 20, 0, 0));
     }
 
     private final JavaPlugin plugin;
@@ -25,6 +27,7 @@ public class PluginConfig {
     private int maxConcurrentRequests;
     private int cacheSize;
     private boolean surfaceBlockMask;
+    private String activeBlockset;
 
     public PluginConfig(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -39,7 +42,7 @@ public class PluginConfig {
         enabled = config.getBoolean("enabled", true);
         maxConcurrentRequests = config.getInt("max_concurrent_requests", 2);
         cacheSize = config.getInt("cache_size", 1000);
-        surfaceBlockMask = config.getBoolean("surface_block_mask", true);
+        surfaceBlockMask = config.getBoolean("surface_block_mask", false);
 
         // Load tile sources from config
         tileSources = new LinkedHashMap<>();
@@ -48,8 +51,8 @@ public class PluginConfig {
             for (String key : sourcesSection.getKeys(false)) {
                 String url = sourcesSection.getString(key + ".url");
                 int zoom = sourcesSection.getInt(key + ".zoom", 14);
-                int ox = sourcesSection.getInt(key + ".offset.x", 0);
-                int oz = sourcesSection.getInt(key + ".offset.z", 0);
+                double ox = sourcesSection.getDouble(key + ".offset.x", 0);
+                double oz = sourcesSection.getDouble(key + ".offset.z", 0);
                 if (url != null && !url.isEmpty()) {
                     tileSources.put(key, new TileSource(url, zoom, ox, oz));
                 }
@@ -60,11 +63,13 @@ public class PluginConfig {
             tileSources.putAll(DEFAULT_SOURCES);
         }
 
-        activeSourceName = config.getString("active_source", "bing");
+        activeSourceName = config.getString("active_source", "osm");
         // Validate active source exists
         if (!tileSources.containsKey(activeSourceName)) {
             activeSourceName = tileSources.keySet().iterator().next();
         }
+
+        activeBlockset = config.getString("active_blockset", "Default");
     }
 
     /**
@@ -79,24 +84,33 @@ public class PluginConfig {
         return true;
     }
 
+    /**
+     * Switch active blockset and persist to config file.
+     */
+    public void setActiveBlockset(String name) {
+        activeBlockset = name;
+        plugin.getConfig().set("active_blockset", name);
+        plugin.saveConfig();
+    }
+
     // ---- Delegating getters (active source) ----
 
     public String getTileUrl() {
         TileSource src = tileSources.get(activeSourceName);
-        return src != null ? src.url() : DEFAULT_SOURCES.get("bing").url();
+        return src != null ? src.url() : DEFAULT_SOURCES.get("osm").url();
     }
 
     public int getZoom() {
         TileSource src = tileSources.get(activeSourceName);
-        return src != null ? src.zoom() : DEFAULT_SOURCES.get("bing").zoom();
+        return src != null ? src.zoom() : DEFAULT_SOURCES.get("osm").zoom();
     }
 
-    public int getTileOffsetX() {
+    public double getTileOffsetX() {
         TileSource src = tileSources.get(activeSourceName);
         return src != null ? src.offsetX() : 0;
     }
 
-    public int getTileOffsetZ() {
+    public double getTileOffsetZ() {
         TileSource src = tileSources.get(activeSourceName);
         return src != null ? src.offsetZ() : 0;
     }
@@ -109,5 +123,6 @@ public class PluginConfig {
     public int getMaxConcurrentRequests() { return maxConcurrentRequests; }
     public int getCacheSize() { return cacheSize; }
     public boolean isSurfaceBlockMask() { return surfaceBlockMask; }
+    public String getActiveBlockset() { return activeBlockset; }
     public JavaPlugin getPlugin() { return plugin; }
 }

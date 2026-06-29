@@ -1,0 +1,1720 @@
+[
+  {
+    "name": "Acacia Wood",
+    "texture": "acacia_log.png",
+    "id": "acacia_wood",
+    "rgb": [
+      104,
+      97,
+      88
+    ],
+    "lab": [
+      "0.49635625460959570399",
+      "0.00450298598056794730",
+      "0.01598853576389053233"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Andesite",
+    "texture": "andesite.png",
+    "id": "andesite",
+    "rgb": [
+      137,
+      137,
+      137
+    ],
+    "lab": [
+      "0.63009344362833874520",
+      "0.00000000005100780909",
+      "0.00000002348604488667"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Basalt Side",
+    "texture": "basalt_side.png",
+    "id": "basalt",
+    "rgb": [
+      75,
+      74,
+      78
+    ],
+    "lab": [
+      "0.41149580490106429931",
+      "0.00309491393953997829",
+      "-0.00593621635167673745"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Basalt Top",
+    "texture": "basalt_top.png",
+    "id": "basalt",
+    "rgb": [
+      86,
+      86,
+      89
+    ],
+    "lab": [
+      "0.45419701459922218190",
+      "0.00134432119211344570",
+      "-0.00462525842291988676"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Bedrock",
+    "texture": "bedrock.png",
+    "id": "bedrock",
+    "rgb": [
+      94,
+      94,
+      94
+    ],
+    "lab": [
+      "0.48193149058901035842",
+      "0.00000000003901376444",
+      "0.00000001796346998928"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Birch Wood",
+    "texture": "birch_log.png",
+    "id": "birch_wood",
+    "rgb": [
+      224,
+      222,
+      219
+    ],
+    "lab": [
+      "0.90131455100677160264",
+      "0.00093604293815119366",
+      "0.00451863124880691469"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Black Concrete",
+    "texture": "black_concrete.png",
+    "id": "black_concrete",
+    "rgb": [
+      8,
+      10,
+      15
+    ],
+    "lab": [
+      "0.14491205160644399230",
+      "-0.00063164373602971058",
+      "-0.01146610507547234092"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Black Concrete Powder",
+    "texture": "black_concrete_powder.png",
+    "id": "black_concrete_powder",
+    "rgb": [
+      26,
+      27,
+      32
+    ],
+    "lab": [
+      "0.22323907017769650807",
+      "0.00113022415155543399",
+      "-0.00974974703553782573"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Black Wool",
+    "texture": "black_wool.png",
+    "id": "black_wool",
+    "rgb": [
+      21,
+      22,
+      26
+    ],
+    "lab": [
+      "0.20087373106260467126",
+      "0.00063743644191598114",
+      "-0.00809399332997151610"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Blackstone",
+    "texture": "blackstone.png",
+    "id": "blackstone",
+    "rgb": [
+      44,
+      39,
+      45
+    ],
+    "lab": [
+      "0.28059107947805361771",
+      "0.01002190570478309062",
+      "-0.00823154320657518146"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Blackstone Top",
+    "texture": "blackstone_top.png",
+    "id": "blackstone",
+    "rgb": [
+      44,
+      39,
+      46
+    ],
+    "lab": [
+      "0.28101931446449429641",
+      "0.01048576762217107161",
+      "-0.00999584286457894100"
+    ],
+    "sides": [
+      "top"
+    ]
+  },
+  {
+    "name": "Blast Furnace Top",
+    "texture": "blast_furnace_top.png",
+    "id": "blast_furnace",
+    "rgb": [
+      82,
+      81,
+      82
+    ],
+    "lab": [
+      "0.43622689032300321355",
+      "0.00170380649100027037",
+      "-0.00116608942224255552"
+    ],
+    "sides": [
+      "top"
+    ]
+  },
+  {
+    "name": "Bone Block Side",
+    "texture": "bone_block_side.png",
+    "id": "bone_block",
+    "rgb": [
+      229,
+      225,
+      207
+    ],
+    "lab": [
+      "0.90802258430928095567",
+      "-0.00280248113384995445",
+      "0.02426139995991694054"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Bone Block Top",
+    "texture": "bone_block_top.png",
+    "id": "bone_block",
+    "rgb": [
+      210,
+      206,
+      180
+    ],
+    "lab": [
+      "0.84768319727040708500",
+      "-0.00608425887663877063",
+      "0.03480564057647361764"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Calcite",
+    "texture": "calcite.png",
+    "id": "calcite",
+    "rgb": [
+      224,
+      225,
+      221
+    ],
+    "lab": [
+      "0.90784476896608579111",
+      "-0.00256465771815717059",
+      "0.00483739334777688601"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Chiseled Deepslate",
+    "texture": "chiseled_deepslate.png",
+    "id": "chiseled_deepslate",
+    "rgb": [
+      56,
+      56,
+      57
+    ],
+    "lab": [
+      "0.34106423742020564038",
+      "0.00048364294193259383",
+      "-0.00165306502510165210"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Chiseled Polished Blackstone",
+    "texture": "chiseled_polished_blackstone.png",
+    "id": "chiseled_polished_blackstone",
+    "rgb": [
+      56,
+      52,
+      61
+    ],
+    "lab": [
+      "0.33267626572088454528",
+      "0.00959435908448250108",
+      "-0.01342215806716506865"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Chiseled Stone Bricks",
+    "texture": "chiseled_stone_bricks.png",
+    "id": "chiseled_stone_bricks",
+    "rgb": [
+      122,
+      121,
+      122
+    ],
+    "lab": [
+      "0.57729081250540426051",
+      "0.00158824552629893700",
+      "-0.00108742047277948783"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Clay",
+    "texture": "clay.png",
+    "id": "clay",
+    "rgb": [
+      160,
+      166,
+      179
+    ],
+    "lab": [
+      "0.72446010976632102540",
+      "-0.00141740006920487716",
+      "-0.01994260730553876204"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Coal Block",
+    "texture": "coal_block.png",
+    "id": "coal_block",
+    "rgb": [
+      17,
+      17,
+      17
+    ],
+    "lab": [
+      "0.17763777191722593396",
+      "0.00000000001438026087",
+      "0.00000000662125396178"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Cobbled Deepslate",
+    "texture": "cobbled_deepslate.png",
+    "id": "cobbled_deepslate",
+    "rgb": [
+      80,
+      80,
+      83
+    ],
+    "lab": [
+      "0.43233116642803892660",
+      "0.00136020911925432975",
+      "-0.00468371543076290253"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Cobblestone",
+    "texture": "cobblestone.png",
+    "id": "cobblestone",
+    "rgb": [
+      131,
+      131,
+      131
+    ],
+    "lab": [
+      "0.60998644515813049694",
+      "0.00000000004938055520",
+      "0.00000002273657845331"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Creaking Heart Top",
+    "texture": "creaking_heart_top.png",
+    "id": "creaking_heart",
+    "rgb": [
+      76,
+      63,
+      58
+    ],
+    "lab": [
+      "0.37968833102588678274",
+      "0.01485710090515804382",
+      "0.01345197769675665622"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Cyan Terracotta",
+    "texture": "cyan_terracotta.png",
+    "id": "cyan_terracotta",
+    "rgb": [
+      86,
+      91,
+      91
+    ],
+    "lab": [
+      "0.46673066978208949118",
+      "-0.00606090541286313789",
+      "-0.00184597532398850239"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Dead Brain Coral Block",
+    "texture": "dead_brain_coral_block.png",
+    "id": "dead_brain_coral_block",
+    "rgb": [
+      126,
+      119,
+      116
+    ],
+    "lab": [
+      "0.57458611087747535340",
+      "0.00694196726718215862",
+      "0.00689691070509590443"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Dead Bubble Coral Block",
+    "texture": "dead_bubble_coral_block.png",
+    "id": "dead_bubble_coral_block",
+    "rgb": [
+      133,
+      125,
+      121
+    ],
+    "lab": [
+      "0.59559102446276079856",
+      "0.00762642890479159341",
+      "0.00862657741862121741"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Dead Fire Coral Block",
+    "texture": "dead_fire_coral_block.png",
+    "id": "dead_fire_coral_block",
+    "rgb": [
+      133,
+      125,
+      121
+    ],
+    "lab": [
+      "0.59559102446276079856",
+      "0.00762642890479159341",
+      "0.00862657741862121741"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Dead Horn Coral Block",
+    "texture": "dead_horn_coral_block.png",
+    "id": "dead_horn_coral_block",
+    "rgb": [
+      136,
+      129,
+      124
+    ],
+    "lab": [
+      "0.60788484442238932548",
+      "0.00598904076916839667",
+      "0.00962298064167704803"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Dead Tube Coral Block",
+    "texture": "dead_tube_coral_block.png",
+    "id": "dead_tube_coral_block",
+    "rgb": [
+      132,
+      125,
+      121
+    ],
+    "lab": [
+      "0.59468032004338589047",
+      "0.00645228923787988240",
+      "0.00825775458425093145"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Deepslate",
+    "texture": "deepslate.png",
+    "id": "deepslate",
+    "rgb": [
+      83,
+      83,
+      85
+    ],
+    "lab": [
+      "0.44294577473556950853",
+      "0.00090440646396960922",
+      "-0.00309941907843847009"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Deepslate Bricks",
+    "texture": "deepslate_bricks.png",
+    "id": "deepslate_bricks",
+    "rgb": [
+      74,
+      74,
+      75
+    ],
+    "lab": [
+      "0.40947012247830866238",
+      "0.00046243261568790217",
+      "-0.00157864416284542175"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Deepslate Tiles",
+    "texture": "deepslate_tiles.png",
+    "id": "deepslate_tiles",
+    "rgb": [
+      57,
+      57,
+      57
+    ],
+    "lab": [
+      "0.34458381826887612975",
+      "0.00000000002789515841",
+      "0.00000001284398548629"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Deepslate Top",
+    "texture": "deepslate_top.png",
+    "id": "deepslate",
+    "rgb": [
+      89,
+      89,
+      91
+    ],
+    "lab": [
+      "0.46468410976519303190",
+      "0.00089395762702082493",
+      "-0.00306206809781178757"
+    ],
+    "sides": [
+      "top"
+    ]
+  },
+  {
+    "name": "Diorite",
+    "texture": "diorite.png",
+    "id": "diorite",
+    "rgb": [
+      192,
+      192,
+      193
+    ],
+    "lab": [
+      "0.80809039180551578418",
+      "0.00039088875187703875",
+      "-0.00133079362646648658"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Gravel",
+    "texture": "gravel.png",
+    "id": "gravel",
+    "rgb": [
+      133,
+      128,
+      128
+    ],
+    "lab": [
+      "0.60424296554298118078",
+      "0.00578320589084585501",
+      "0.00180395286492346374"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Gray Concrete",
+    "texture": "gray_concrete.png",
+    "id": "gray_concrete",
+    "rgb": [
+      54,
+      57,
+      61
+    ],
+    "lab": [
+      "0.34320682952557479695",
+      "-0.00202202728607303595",
+      "-0.00784615332375698804"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Gray Concrete Powder",
+    "texture": "gray_concrete_powder.png",
+    "id": "gray_concrete_powder",
+    "rgb": [
+      77,
+      81,
+      85
+    ],
+    "lab": [
+      "0.43272176465727330008",
+      "-0.00313687334641463145",
+      "-0.00777247853929913246"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Gray Glazed Terracotta",
+    "texture": "gray_glazed_terracotta.png",
+    "id": "gray_glazed_terracotta",
+    "rgb": [
+      91,
+      97,
+      100
+    ],
+    "lab": [
+      "0.48836217105232643254",
+      "-0.00585521866441149341",
+      "-0.00673518594650174274"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Gray Wool",
+    "texture": "gray_wool.png",
+    "id": "gray_wool",
+    "rgb": [
+      62,
+      68,
+      71
+    ],
+    "lab": [
+      "0.38221043071450033768",
+      "-0.00619178402972717090",
+      "-0.00714643453743302182"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Iron Block",
+    "texture": "iron_block.png",
+    "id": "iron_block",
+    "rgb": [
+      221,
+      220,
+      220
+    ],
+    "lab": [
+      "0.89527038684291027071",
+      "0.00104197251422055714",
+      "0.00032214615272196934"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Light Gray Concrete",
+    "texture": "light_gray_concrete.png",
+    "id": "light_gray_concrete",
+    "rgb": [
+      125,
+      125,
+      115
+    ],
+    "lab": [
+      "0.58668363012222601860",
+      "-0.00431794664068552159",
+      "0.01425671900817182536"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Light Gray Concrete Powder",
+    "texture": "light_gray_concrete_powder.png",
+    "id": "light_gray_concrete_powder",
+    "rgb": [
+      155,
+      155,
+      148
+    ],
+    "lab": [
+      "0.68740794852171449580",
+      "-0.00288449774049154284",
+      "0.00963817894629925842"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Light Gray Wool",
+    "texture": "light_gray_wool.png",
+    "id": "light_gray_wool",
+    "rgb": [
+      142,
+      142,
+      135
+    ],
+    "lab": [
+      "0.64461859125609854981",
+      "-0.00293370581441571021",
+      "0.00978921079573646935"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Mud",
+    "texture": "mud.png",
+    "id": "mud",
+    "rgb": [
+      60,
+      58,
+      60
+    ],
+    "lab": [
+      "0.35118461481978852090",
+      "0.00360094123351120676",
+      "-0.00245921717285596531"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Mushroom Stem",
+    "texture": "mushroom_stem.png",
+    "id": "mushroom_stem",
+    "rgb": [
+      203,
+      196,
+      185
+    ],
+    "lab": [
+      "0.82290695717540185417",
+      "0.00315537117567815661",
+      "0.01676085492136558663"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Netherite Block",
+    "texture": "netherite_block.png",
+    "id": "netherite_block",
+    "rgb": [
+      68,
+      63,
+      66
+    ],
+    "lab": [
+      "0.37375925388449882103",
+      "0.00796060552712629654",
+      "-0.00278170876299693726"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Obsidian",
+    "texture": "obsidian.png",
+    "id": "obsidian",
+    "rgb": [
+      21,
+      13,
+      34
+    ],
+    "lab": [
+      "0.18204981612871704022",
+      "0.02122469571473085959",
+      "-0.03715410204508623471"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Pale Moss Block",
+    "texture": "pale_moss_block.png",
+    "id": "pale_moss_block",
+    "rgb": [
+      108,
+      114,
+      106
+    ],
+    "lab": [
+      "0.54440654477723071647",
+      "-0.01052242705825676139",
+      "0.00953858228476622827"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Pale Oak Wood",
+    "texture": "pale_oak_log.png",
+    "id": "pale_oak_wood",
+    "rgb": [
+      89,
+      79,
+      77
+    ],
+    "lab": [
+      "0.43678389162126163292",
+      "0.01178466364660185617",
+      "0.00711818859611357269"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Pale Oak Planks",
+    "texture": "pale_oak_planks.png",
+    "id": "pale_oak_planks",
+    "rgb": [
+      229,
+      219,
+      218
+    ],
+    "lab": [
+      "0.89909855170810959457",
+      "0.01010674792615490203",
+      "0.00456981306696691014"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Pale Oak Trapdoor",
+    "texture": "pale_oak_trapdoor.png",
+    "id": "pale_oak_trapdoor_bottom",
+    "rgb": [
+      232,
+      223,
+      221
+    ],
+    "lab": [
+      "0.91020568688170455651",
+      "0.00864090817100177100",
+      "0.00550840006790231929"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Polished Andesite",
+    "texture": "polished_andesite.png",
+    "id": "polished_andesite",
+    "rgb": [
+      134,
+      136,
+      135
+    ],
+    "lab": [
+      "0.62475005689232221417",
+      "-0.00269007613805966050",
+      "0.00071948743250582758"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Polished Basalt Side",
+    "texture": "polished_basalt_side.png",
+    "id": "polished_basalt",
+    "rgb": [
+      92,
+      91,
+      94
+    ],
+    "lab": [
+      "0.47313323931503376008",
+      "0.00255410060999111677",
+      "-0.00419649686959550072"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Polished Basalt Top",
+    "texture": "polished_basalt_top.png",
+    "id": "polished_basalt",
+    "rgb": [
+      102,
+      102,
+      103
+    ],
+    "lab": [
+      "0.51060909216879579731",
+      "0.00043795217699982292",
+      "-0.00149336597582727659"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Polished Blackstone",
+    "texture": "polished_blackstone.png",
+    "id": "polished_blackstone",
+    "rgb": [
+      55,
+      51,
+      60
+    ],
+    "lab": [
+      "0.32875999340313555308",
+      "0.00962037695818787619",
+      "-0.01346330980763044138"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Polished Blackstone Bricks",
+    "texture": "polished_blackstone_bricks.png",
+    "id": "polished_blackstone_bricks",
+    "rgb": [
+      50,
+      46,
+      54
+    ],
+    "lab": [
+      "0.30857025295661355546",
+      "0.00931094401100798774",
+      "-0.01195313071592166154"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Polished Deepslate",
+    "texture": "polished_deepslate.png",
+    "id": "polished_deepslate",
+    "rgb": [
+      75,
+      75,
+      76
+    ],
+    "lab": [
+      "0.41318331589746065680",
+      "0.00046140726131310705",
+      "-0.00157506001439439158"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Polished Diorite",
+    "texture": "polished_diorite.png",
+    "id": "polished_diorite",
+    "rgb": [
+      196,
+      196,
+      198
+    ],
+    "lab": [
+      "0.82090660905205781184",
+      "0.00077766399122902730",
+      "-0.00265274255308645124"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Polished Tuff",
+    "texture": "polished_tuff.png",
+    "id": "polished_tuff",
+    "rgb": [
+      98,
+      105,
+      100
+    ],
+    "lab": [
+      "0.51311760838223230419",
+      "-0.01048915526802787768",
+      "0.00492134017511264288"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Powder Snow",
+    "texture": "powder_snow.png",
+    "id": "powder_snow",
+    "rgb": [
+      248,
+      253,
+      253
+    ],
+    "lab": [
+      "0.99029144328484375315",
+      "-0.00505523186409001513",
+      "-0.00155240541322054781"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Quartz Block Top",
+    "texture": "quartz_block_top.png",
+    "id": "quartz_block",
+    "rgb": [
+      235,
+      229,
+      223
+    ],
+    "lab": [
+      "0.92493538238018890851",
+      "0.00394359432663088372",
+      "0.00961433925877697160"
+    ],
+    "sides": [
+      "top"
+    ]
+  },
+  {
+    "name": "Quartz Pillar",
+    "texture": "quartz_pillar.png",
+    "id": "quartz_pillar",
+    "rgb": [
+      235,
+      230,
+      224
+    ],
+    "lab": [
+      "0.92717506484181289039",
+      "0.00289939140873723966",
+      "0.00928476137022904435"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Reinforced Deepslate Top",
+    "texture": "reinforced_deepslate_top.png",
+    "id": "reinforced_deepslate",
+    "rgb": [
+      91,
+      95,
+      86
+    ],
+    "lab": [
+      "0.47905226642159737249",
+      "-0.00893729919142097207",
+      "0.01202949933968561202"
+    ],
+    "sides": [
+      "top"
+    ]
+  },
+  {
+    "name": "Smithing Table Top",
+    "texture": "smithing_table_top.png",
+    "id": "smithing_table",
+    "rgb": [
+      58,
+      60,
+      73
+    ],
+    "lab": [
+      "0.35949189105068035666",
+      "0.00326583927510518124",
+      "-0.02234790884702930747"
+    ],
+    "sides": [
+      "top"
+    ]
+  },
+  {
+    "name": "Smooth Basalt",
+    "texture": "smooth_basalt.png",
+    "id": "smooth_basalt",
+    "rgb": [
+      75,
+      74,
+      79
+    ],
+    "lab": [
+      "0.41186424529149462392",
+      "0.00354275534962791849",
+      "-0.00752667878173063354"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Smooth Stone",
+    "texture": "smooth_stone.png",
+    "id": "smooth_stone",
+    "rgb": [
+      159,
+      159,
+      159
+    ],
+    "lab": [
+      "0.70251074535425295231",
+      "0.00000000005687028626",
+      "0.00000002618532068954"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Snow",
+    "texture": "snow.png",
+    "id": "snow_block",
+    "rgb": [
+      249,
+      254,
+      254
+    ],
+    "lab": [
+      "0.99327115254409581446",
+      "-0.00505151410174636828",
+      "-0.00155129469987380642"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Stone",
+    "texture": "stone.png",
+    "id": "stone",
+    "rgb": [
+      126,
+      126,
+      126
+    ],
+    "lab": [
+      "0.59310331331409937849",
+      "0.00000000004801342657",
+      "0.00000002210727817475"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Stone Bricks",
+    "texture": "stone_bricks.png",
+    "id": "stone_bricks",
+    "rgb": [
+      124,
+      123,
+      124
+    ],
+    "lab": [
+      "0.58410378597291645608",
+      "0.00158358331851204959",
+      "-0.00108424290507769250"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Stripped Pale Oak Wood",
+    "texture": "stripped_pale_oak_log.png",
+    "id": "stripped_pale_oak_wood",
+    "rgb": [
+      245,
+      238,
+      237
+    ],
+    "lab": [
+      "0.95428031133616753046",
+      "0.00683672340440866222",
+      "0.00351800384671341337"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Stripped Pale Oak Log Top",
+    "texture": "stripped_pale_oak_log_top.png",
+    "id": "stripped_pale_oak_log",
+    "rgb": [
+      235,
+      227,
+      226
+    ],
+    "lab": [
+      "0.92183907449240654053",
+      "0.00794405390388086552",
+      "0.00387836064185487217"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Tuff",
+    "texture": "tuff.png",
+    "id": "tuff",
+    "rgb": [
+      110,
+      111,
+      105
+    ],
+    "lab": [
+      "0.53893531221114165941",
+      "-0.00381284846380960940",
+      "0.00841148786114342961"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "Tuff Bricks",
+    "texture": "tuff_bricks.png",
+    "id": "tuff_bricks",
+    "rgb": [
+      101,
+      105,
+      98
+    ],
+    "lab": [
+      "0.51506543756362010988",
+      "-0.00786612102783787459",
+      "0.00890113703916295407"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "White Concrete",
+    "texture": "white_concrete.png",
+    "id": "white_concrete",
+    "rgb": [
+      207,
+      213,
+      214
+    ],
+    "lab": [
+      "0.86867325641131876157",
+      "-0.00587309100006266904",
+      "-0.00322610847564952508"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "White Concrete Powder",
+    "texture": "white_concrete_powder.png",
+    "id": "white_concrete_powder",
+    "rgb": [
+      225,
+      227,
+      228
+    ],
+    "lab": [
+      "0.91457578396014016509",
+      "-0.00168817701021689581",
+      "-0.00192748031661238439"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  },
+  {
+    "name": "White Wool",
+    "texture": "white_wool.png",
+    "id": "white_wool",
+    "rgb": [
+      234,
+      236,
+      237
+    ],
+    "lab": [
+      "0.94184211951830310028",
+      "-0.00167594457127956398",
+      "-0.00191342506657155020"
+    ],
+    "sides": [
+      "top",
+      "bottom",
+      "north",
+      "south",
+      "east",
+      "west"
+    ]
+  }
+]

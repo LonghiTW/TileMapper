@@ -2,45 +2,43 @@ package com.mndk.tilemapper;
 
 import com.mndk.tilemapper.block.BlockColorRegistry;
 import com.mndk.tilemapper.config.PluginConfig;
+import com.mndk.tilemapper.config.TileSource;
 import com.mndk.tilemapper.processor.ChunkProcessor;
 import com.mndk.tilemapper.tile.server.TileServer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import com.mndk.tilemapper.config.TileSource;
-
-public class SatelliteCommand implements TabExecutor {
+public class SatelliteCommand extends Command {
 
     private final PluginConfig config;
     private final ChunkProcessor processor;
     private final TileServer tileServer;
 
     public SatelliteCommand(PluginConfig config, ChunkProcessor processor, TileServer tileServer) {
+        super("tsm",
+                "TileMapper 管理指令",
+                "/tsm <reload|status|sources|source|blocksets|blockset>",
+                List.of());
         this.config = config;
         this.processor = processor;
         this.tileServer = tileServer;
     }
 
     public void register(JavaPlugin plugin) {
-        PluginCommand cmd = plugin.getCommand("tsm");
-        if (cmd != null) {
-            cmd.setExecutor(this);
-            cmd.setTabCompleter(this);
-        }
+        plugin.getServer().getCommandMap().register(plugin.getName(), this);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean execute(CommandSender sender, String label, String[] args) {
         if (args.length < 1) {
-            sender.sendMessage(ChatColor.RED + "Usage: /tsm <reload|status|sources|source>");
+            sender.sendMessage(ChatColor.RED + "Usage: /" + label + " <reload|status|sources|source|blocksets|blockset>");
             return false;
         }
 
@@ -53,9 +51,13 @@ public class SatelliteCommand implements TabExecutor {
                 return handleListSources(sender);
             case "source":
                 return handleSwitchSource(sender, args);
+            case "blocksets":
+                return handleListBlocksets(sender);
+            case "blockset":
+                return handleSwitchBlockset(sender, args);
             default:
                 sender.sendMessage(ChatColor.RED + "Unknown subcommand: " + args[0]);
-                sender.sendMessage(ChatColor.RED + "Available: reload, status, sources, source <name>");
+                sender.sendMessage(ChatColor.RED + "Available: reload, status, sources, source <name>, blocksets, blockset <name>");
                 return false;
         }
     }
@@ -85,6 +87,7 @@ public class SatelliteCommand implements TabExecutor {
         sender.sendMessage(ChatColor.YELLOW + "Max Requests: " + config.getMaxConcurrentRequests());
         sender.sendMessage(ChatColor.YELLOW + "Cache Size: " + config.getCacheSize());
         sender.sendMessage(ChatColor.YELLOW + "Surface Block Mask: " + config.isSurfaceBlockMask());
+        sender.sendMessage(ChatColor.YELLOW + "Active Blockset: " + BlockColorRegistry.getCurrentBlockset());
         sender.sendMessage(ChatColor.YELLOW + "Blocks Loaded: " + BlockColorRegistry.getMappingCount());
         return true;
     }
@@ -128,13 +131,87 @@ public class SatelliteCommand implements TabExecutor {
         return true;
     }
 
+    private boolean handleListBlocksets(CommandSender sender) {
+        if (!sender.hasPermission("tilemapper.admin")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
+            return true;
+        }
+        sender.sendMessage(ChatColor.GOLD + "=== Available Blocksets ===");
+        String active = BlockColorRegistry.getCurrentBlockset();
+
+        // Local editable copy
+        String localPrefix = "custom_blockset".equals(active)
+                ? ChatColor.GREEN + "> custom_blockset" + ChatColor.RESET + " (active, local)"
+                : "  custom_blockset (local)";
+        sender.sendMessage(localPrefix);
+
+        // Online read-only blocksets from the repository
+        for (String name : BlockColorRegistry.getBundledBlocksets()) {
+            String prefix = name.equals(active)
+                    ? ChatColor.GREEN + "> " + name + ChatColor.RESET + " (active, online)"
+                    : "  " + name + " (online)";
+            sender.sendMessage(prefix);
+        }
+
+        sender.sendMessage(ChatColor.GRAY + "Use /tsm blockset <name> to switch");
+        return true;
+    }
+
+    private boolean handleSwitchBlockset(CommandSender sender, String[] args) {
+        if (!sender.hasPermission("tilemapper.admin")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
+            return true;
+        }
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.RED + "Usage: /tsm blockset <name|update>");
+            return true;
+        }
+
+        if (args[1].equalsIgnoreCase("update")) {
+            return handleUpdateBlockset(sender);
+        }
+
+        String name = args[1];
+        boolean success = TileMapper.instance.switchBlockset(name);
+        if (success) {
+            sender.sendMessage(ChatColor.GREEN + "Switched to blockset: " + name);
+        } else {
+            sender.sendMessage(ChatColor.RED + "Blockset not found: " + name
+                    + ". Use /tsm blocksets to list available blocksets.");
+        }
+        return true;
+    }
+
+    private boolean handleUpdateBlockset(CommandSender sender) {
+        String currentName = BlockColorRegistry.getCurrentBlockset();
+        if (currentName == null) {
+            sender.sendMessage(ChatColor.RED + "No blockset is currently loaded.");
+            return true;
+        }
+        boolean success = TileMapper.instance.updateBlockset(currentName);
+        if (success) {
+            sender.sendMessage(ChatColor.GREEN + "Blockset '" + currentName + "' downloaded and reloaded.");
+        } else {
+            sender.sendMessage(ChatColor.RED + "Failed to download blockset. Check the console for details.");
+        }
+        return true;
+    }
+
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return List.of("reload", "status", "sources", "source");
+            return List.of("reload", "status", "sources", "source", "blocksets", "blockset");
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("source")) {
             return List.copyOf(config.getTileSources().keySet());
+        }
+        if (args.length == 2 && args[0].equalsIgnoreCase("blockset")) {
+            java.util.List<String> suggestions = new java.util.ArrayList<>();
+            suggestions.add("update");
+            suggestions.add("custom_blockset");
+            java.util.Collections.addAll(suggestions, BlockColorRegistry.getBundledBlocksets());
+            java.util.Collections.sort(suggestions);
+            return suggestions;
         }
         return Collections.emptyList();
     }

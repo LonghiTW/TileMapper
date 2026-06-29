@@ -1,7 +1,7 @@
 # TileMapper
 
 A Paper plugin that overlays real-world satellite imagery onto the Minecraft terrain surface.
-Powered by the [Terra--](https://github.com/SmylerMC/terraminusminus) engine and seamlessly integrates with [TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus).
+Seamlessly integrates with [TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus) which provides the terrain engine and projection transforms.
 
 > This project is a refactored **plugin** port of the original [TerraSatelliteMapper](https://github.com/tf2mandeokyi/TerraSatelliteMapper) **Minecraft Forge mod** (by [@tf2mandeokyi](https://github.com/tf2mandeokyi)), adapted for Paper 1.21.8+ server environments.
 
@@ -54,40 +54,135 @@ Output: `target/tilemapper-<version>.jar` (~428 KB, shaded with Gson + bStats).
 enabled: true
 
 # Active tile source (must match one of the keys under tile_sources:)
-active_source: bing
+active_source: osm
+
+# Active blockset file (without .json).
+# "custom_blockset" = your local editable copy in blockset/custom_blockset.json
+# Any other name (Default, All, Grayscale, Overworld, Nether&End) =
+# read live from the repository (no local file needed).
+active_blockset: "Default"
 
 # Multiple tile sources — add as many as you want
 tile_sources:
+  osm:
+    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    zoom: 18
+    offset:
+      x: 0
+      z: 0
   bing:
-    url: "https://ecn.t0.tiles.virtualearth.net/tiles/a{quadkey}.jpeg?g=1"
+    url: "https://t.ssl.ak.dynamic.tiles.virtualearth.net/comp/ch/{u}?it=A&shading=hill"
     zoom: 20
     offset:
       x: 0
       z: 0
-  osm:
-    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-    zoom: 14
+  yandex:
+    url: "https://core-sat.maps.yandex.net/tiles?l=sat&x={x}&y={y}&z={z}"
+    zoom: 20
     offset:
       x: 0
       z: 0
+  tw:
+    url: "https://wmts.nlsc.gov.tw/wmts/PHOTO2/default/GoogleMapsCompatible/{z}/{y}/{x}.png"
+    zoom: 20
+    offset:
+      x: -0.625
+      z: 0.3125
 
 # Maximum concurrent HTTP requests
-max_concurrent_requests: 8
+max_concurrent_requests: 2
 
 # In-memory tile cache size
-cache_size: 200
+cache_size: 1000
 
 # When true, only replace the configured surface block type — preserves
 # road/building markers that T+- generates on the surface from OSM data.
 # The target block type is read from T+-'s surface_material config (default: GRASS_BLOCK).
 # Set to false to replace any surface block.
-surface_block_mask: true
+surface_block_mask: false
 
 # Config version (do not change)
 config_version: "1.0"
 ```
 
-> **Note**: Surface height is controlled by the `terrain_offset.x/z/y` values in T+-'s `config.yml`. TileMapper reads these automatically to keep both plugins in sync.
+> **Note**: Surface mask uses the `surface_material` value from T+-'s `config.yml` (default: `GRASS_BLOCK`).
+> The surface Y offset is automatically obtained via `RealWorldGenerator.getYOffset()` — no manual config needed.
+
+---
+
+## Blockset — Custom Block Color Mapping
+
+`plugins/TileMapper/blockset/` holds all block color data files, giving you full control over which blocks are used for satellite imagery reproduction.
+
+### How it works
+
+- **Config reference**: `active_blockset` field in `config.yml` selects which blockset to use
+- **Online blocksets** (`All`, `Default`, `Grayscale`, `Overworld`, `Nether&End`) are read **live from the repository** — no local file needed, no manual updates required
+- **Local editable copy**: `custom_blockset.json` — your personal working copy, downloaded from `All.json` on first launch. Edit this file to add or remove blocks without touching the online ones
+- **Hot-update**: Run `/tsm blockset update` to re-download `All.json` as `custom_blockset.json` and reload
+- **Hot-switch**: Use `/tsm blockset <name>` to switch between any online blockset or your local copy
+
+### Available blocksets
+
+Blocksets are hosted on the [GitHub repository](https://github.com/LonghiTW/TileMapper/tree/main/tool/blockset) and read live at runtime — no local download required (except for `custom_blockset`):
+
+| File | Source | Description |
+|------|--------|-------------|
+| `custom_blockset` | local `blockset/custom_blockset.json` | Your editable working copy (auto-downloaded from `All.json` on first launch) |
+| `All` | repository (online) | All available blocks (full spectrum) |
+| `Default` | repository (online) | Curated palette — good all-round balance |
+| `Grayscale` | repository (online) | Pure grey blocks — activates **luminance-only matching** |
+| `Overworld` | repository (online) | Natural overworld blocks only |
+| `Nether&End` | repository (online) | Nether + End blocks only |
+
+### JSON format
+
+Blockset files are flat JSON arrays. Each entry has at least `id` (block registry name) and `rgb` (sRGB 8-bit color).
+The optional `lab` field stores pre-computed Oklab values for faster loading.
+
+```json
+[
+  {"id": "stone", "rgb": [126, 126, 126]},
+  {"id": "dirt", "rgb": [134, 96, 67]}
+]
+```
+
+> The `id` field must be a valid Minecraft registry name (e.g. `stone`, `oak_planks`).
+> Entries with unrecognized block IDs are silently skipped.
+
+### Lab vs RGB sanity check
+
+On first load, the plugin checks whether the stored Oklab values match the RGB source.
+If they match (within `d² < 0.01`), the stored Oklab values are used directly.
+If they don't — indicating the file was generated for a different color space — the plugin
+**automatically falls back** to computing Oklab from `rgb` at runtime for all entries.
+This means you can safely add your own entries with just `id` + `rgb` — they'll work correctly.
+
+### Example layout
+
+```
+plugins/TileMapper/blockset/
+  custom_blockset.json    ← your editable copy (the only local file)
+```
+
+To restore the default `custom_blockset.json`, delete the `blockset/` folder and restart the server — the plugin will re-download `All.json` from the repository.
+
+> **Color space**: TileMapper uses **Oklab** with Euclidean distance for perceptually-uniform block color matching.
+> This is a significant improvement over CIE2000 delta-E used in earlier versions — Oklab is simpler,
+> faster, and more accurate for colour comparison.
+
+### Generating a custom blockset
+
+A Python tool is available at [`tool/assets2blockset.py`](tool/assets2blockset.py)
+that extracts block colors from Minecraft's official assets texture pack
+(using `textures/block`), computes Oklab values, and generates
+a complete blockset JSON file with palette-based deduplication.
+Derived from [hueblocks/jar2blockset](https://github.com/1280px/hueblocks/tree/master/jar2blockset).
+
+```bash
+# Download the matching asset pack and run:
+python tool/assets2blockset.py --version 1.21.8 --output my_blockset.json
+```
 
 ---
 
@@ -98,6 +193,9 @@ config_version: "1.0"
 | `/tsm status` | `tilemapper.admin` | Show plugin status, active source and current settings |
 | `/tsm sources` | `tilemapper.admin` | List all available tile sources |
 | `/tsm source <name>` | `tilemapper.admin` | Switch to a different tile source on the fly |
+| `/tsm blocksets` | `tilemapper.admin` | List all available blockset files |
+| `/tsm blockset <name>` | `tilemapper.admin` | Switch to a different blockset |
+| `/tsm blockset update` | `tilemapper.admin` | Re-download the current blockset from the source URL and reload |
 | `/tsm reload` | `tilemapper.admin` | Hot-reload `config.yml` without restarting |
 
 By default, server operators (OP) have the `tilemapper.admin` permission.
@@ -107,26 +205,23 @@ By default, server operators (OP) have the `tilemapper.admin` permission.
 ## How It Works
 
 ```
-New chunk generated (ChunkLoadEvent, isNewChunk=true)
-       │
-       ▼
-  ChunkProcessor initializes
-       │  ├─ Reads T+- config.yml → terrain_offset
-       │  └─ Creates ChunkDataLoader (T-- API)
+New chunk generated — SatelliteBlockPopulator.populate() runs in T+- generation pipeline
        │
        ▼
   For each 16×16 column:
        │
-       ├─ ChunkDataLoader.groundHeight() + tPlusYOffset
-       │     └─ Gets surface Y (identical to T+-)
+       ├─ Read surface_material from T+- config.yml (for block mask)
        │
-       ├─ GeographicProjection.toGeo(worldX, worldZ)
+       ├─ CachedChunkData.groundHeight() + RealWorldGenerator.getYOffset()
+       │     └─ Gets exact surface Y (identical to T+-)
+       │
+       ├─ TerraConnector.toGeo(worldX + tileOffsetX, worldZ + tileOffsetZ)
        │     └─ MC coordinates → latitude/longitude
        │
        ├─ TileServer.fetch(lat, lon, zoom)
        │     └─ HTTP async request → bicubic interpolation → RGB
        │
-       └─ CIE2000 delta-E nearest-neighbor match
+       └─ Oklab Euclidean distance nearest-neighbor match
              └─ Sets block type
 ```
 
@@ -137,19 +232,19 @@ New chunk generated (ChunkLoadEvent, isNewChunk=true)
 | Dependency | Purpose | Scope |
 |------------|---------|-------|
 | [Paper API](https://papermc.io/) 1.21.8 | Bukkit API | provided |
-| [Terra--](https://github.com/SmylerMC/terraminusminus) 2.2.0-1.21.8 | Terrain engine, projection transforms | provided |
-| [TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus) | Surface generation (provides `terrain_offset`) | runtime |
+| [TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus) | Terrain engine, surface generation, projection transforms | runtime |
 | [Lombok](https://projectlombok.org/) 1.18.42 | Boilerplate reduction | provided (annotation) |
-| [Gson](https://github.com/google/gson) 2.13.2 | JSON parsing (`block_data.json`) | shaded |
+| [Gson](https://github.com/google/gson) 2.13.2 | JSON parsing (blockset files) | shaded |
 | [bStats](https://bstats.org/) 3.1.0 | Anonymous usage metrics | shaded |
 
 ---
 
 ## Credits
 
-- **Terra--** ([SmylerMC/terraminusminus](https://github.com/SmylerMC/terraminusminus)) developed by [@SmylerMC](https://github.com/SmylerMC) — terrain engine and projection API
-- **TerraPlusMinus** ([BTE-Germany/TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus)) — surface generation plugin for Paper
 - **TerraSatelliteMapper** ([tf2mandeokyi/TerraSatelliteMapper](https://github.com/tf2mandeokyi/TerraSatelliteMapper)) — original Forge mod by [@tf2mandeokyi](https://github.com/tf2mandeokyi), which this project is ported from
+- **Terra--** ([SmylerMC/terraminusminus](https://github.com/SmylerMC/terraminusminus)) developed by [@SmylerMC](https://github.com/SmylerMC) — the underlying terrain engine and projection API (bundled within TerraPlusMinus)
+- **TerraPlusMinus** ([BTE-Germany/TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus)) — surface generation plugin for Paper, bundles the terrain engine
+- **hueblocks** ([1280px/hueblocks](https://github.com/1280px/hueblocks)) — the `jar2blockset` pipeline that `assets2blockset.py` is derived from
 
 ---
 

@@ -2,17 +2,17 @@
 version: '${project.version}'
 main: com.mndk.tilemapper.TileMapper
 api-version: '1.21'
-depend: [Terraplusminus]
 prefix: TSM
 load: STARTUP
 
-commands:
-  tsm:
-    description: TileMapper 蝞∠??誘
-    usage: /<command> <reload|status>
-    permission: tilemapper.admin
+dependencies:
+  server:
+    Terraplusminus:
+      load: BEFORE
+      required: true
+      join-classpath: true
 
 permissions:
   tilemapper.admin:
-    description: ?迂雿輻 /tsm ?誘
+    description: 允許使用 /tsm 指令
     default: op

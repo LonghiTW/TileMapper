@@ -1140,144 +1140,6 @@
     ]
   },
   {
-    "name": "Creaking Heart",
-    "texture": "creaking_heart.png",
-    "id": "creaking_heart",
-    "rgb": [
-      86,
-      73,
-      69
-    ],
-    "lab": [
-      "0.41729720647002704892",
-      "0.01494016715851884114",
-      "0.01158905847121111110"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Creaking Heart Awake",
-    "texture": "creaking_heart_awake.png",
-    "id": "creaking_heart_awake",
-    "rgb": [
-      159,
-      89,
-      59
-    ],
-    "lab": [
-      "0.53906594337189706057",
-      "0.07415997197794527152",
-      "0.07007362271596784264"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Creaking Heart Dormant",
-    "texture": "creaking_heart_dormant.png",
-    "id": "creaking_heart_dormant",
-    "rgb": [
-      106,
-      72,
-      59
-    ],
-    "lab": [
-      "0.43595361338681398733",
-      "0.03836070580733569324",
-      "0.03425977959383402771"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Creaking Heart Top",
-    "texture": "creaking_heart_top.png",
-    "id": "creaking_heart",
-    "rgb": [
-      76,
-      63,
-      58
-    ],
-    "lab": [
-      "0.37968833102588678274",
-      "0.01485710090515804382",
-      "0.01345197769675665622"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Creaking Heart Top Awake",
-    "texture": "creaking_heart_top_awake.png",
-    "id": "creaking_heart_awake",
-    "rgb": [
-      165,
-      89,
-      52
-    ],
-    "lab": [
-      "0.54640422654509257505",
-      "0.07865541063480152584",
-      "0.07987392569078782811"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Creaking Heart Top Dormant",
-    "texture": "creaking_heart_top_dormant.png",
-    "id": "creaking_heart_dormant",
-    "rgb": [
-      105,
-      68,
-      52
-    ],
-    "lab": [
-      "0.42479230395180389568",
-      "0.04127604866365558456",
-      "0.04005857557179726136"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
     "name": "Crimson Nylium",
     "texture": "crimson_nylium.png",
     "id": "crimson_nylium",
@@ -2014,24 +1876,6 @@
       "south",
       "east",
       "west"
-    ]
-  },
-  {
-    "name": "Flowering Azalea Top",
-    "texture": "flowering_azalea_top.png",
-    "id": "flowering_azalea",
-    "rgb": [
-      116,
-      123,
-      84
-    ],
-    "lab": [
-      "0.56660528752343153336",
-      "-0.02558160685658567024",
-      "0.05121690420558994150"
-    ],
-    "sides": [
-      "top"
     ]
   },
   {
@@ -3263,24 +3107,6 @@
     ]
   },
   {
-    "name": "Ochre Froglight Top",
-    "texture": "ochre_froglight_top.png",
-    "id": "ochre_froglight",
-    "rgb": [
-      250,
-      245,
-      210
-    ],
-    "lab": [
-      "0.96509683258812328788",
-      "-0.00835901345262718420",
-      "0.04508786707646639247"
-    ],
-    "sides": [
-      "top"
-    ]
-  },
-  {
     "name": "Orange Concrete",
     "texture": "orange_concrete.png",
     "id": "orange_concrete",
@@ -3554,24 +3380,6 @@
       "south",
       "east",
       "west"
-    ]
-  },
-  {
-    "name": "Pearlescent Froglight Top",
-    "texture": "pearlescent_froglight_top.png",
-    "id": "pearlescent_froglight",
-    "rgb": [
-      246,
-      241,
-      240
-    ],
-    "lab": [
-      "0.96172983362499786519",
-      "0.00475849855297977298",
-      "0.00286531088456509764"
-    ],
-    "sides": [
-      "top"
     ]
   },
   {
@@ -4573,52 +4381,6 @@
     ]
   },
   {
-    "name": "Shroomlight",
-    "texture": "shroomlight.png",
-    "id": "shroomlight",
-    "rgb": [
-      241,
-      156,
-      93
-    ],
-    "lab": [
-      "0.76595735812394527553",
-      "0.07219503070513155762",
-      "0.10669964283768240687"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Shulker Box",
-    "texture": "shulker_box.png",
-    "id": "shulker_box",
-    "rgb": [
-      140,
-      97,
-      140
-    ],
-    "lab": [
-      "0.55298215848644127757",
-      "0.06903933383121918510",
-      "-0.04548435999172434352"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
     "name": "Smooth Basalt",
     "texture": "smooth_basalt.png",
     "id": "smooth_basalt",
@@ -4872,29 +4634,6 @@
     ]
   },
   {
-    "name": "Stripped Acacia Log Top",
-    "texture": "stripped_acacia_log_top.png",
-    "id": "stripped_acacia_log",
-    "rgb": [
-      166,
-      91,
-      51
-    ],
-    "lab": [
-      "0.55112495117849480408",
-      "0.07614239908030584481",
-      "0.08235473411896659934"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
     "name": "Stripped Bamboo Block",
     "texture": "stripped_bamboo_block.png",
     "id": "stripped_bamboo_block",
@@ -4959,29 +4698,6 @@
     ]
   },
   {
-    "name": "Stripped Birch Log Top",
-    "texture": "stripped_birch_log_top.png",
-    "id": "stripped_birch_log",
-    "rgb": [
-      192,
-      172,
-      117
-    ],
-    "lab": [
-      "0.74870111015890761230",
-      "-0.00043239232530167815",
-      "0.07632774200608227755"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
     "name": "Stripped Cherry Wood",
     "texture": "stripped_cherry_log.png",
     "id": "stripped_cherry_wood",
@@ -4994,29 +4710,6 @@
       "0.72739197578079006767",
       "0.08203491260189377243",
       "0.02294319726881011157"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Stripped Cherry Log Top",
-    "texture": "stripped_cherry_log_top.png",
-    "id": "stripped_cherry_log",
-    "rgb": [
-      221,
-      166,
-      159
-    ],
-    "lab": [
-      "0.77447264118293046575",
-      "0.05905942900824240338",
-      "0.03001721549178104631"
     ],
     "sides": [
       "top",
@@ -5097,29 +4790,6 @@
     ]
   },
   {
-    "name": "Stripped Dark Oak Log Top",
-    "texture": "stripped_dark_oak_log_top.png",
-    "id": "stripped_dark_oak_log",
-    "rgb": [
-      66,
-      44,
-      23
-    ],
-    "lab": [
-      "0.31421897961070210936",
-      "0.02079048212923538530",
-      "0.04158491854087661976"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
     "name": "Stripped Jungle Wood",
     "texture": "stripped_jungle_log.png",
     "id": "stripped_jungle_wood",
@@ -5132,29 +4802,6 @@
       "0.64322081863212265951",
       "0.02566793208579828955",
       "0.07614584491146586531"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Stripped Jungle Log Top",
-    "texture": "stripped_jungle_log_top.png",
-    "id": "stripped_jungle_log",
-    "rgb": [
-      166,
-      123,
-      82
-    ],
-    "lab": [
-      "0.61599250923312520722",
-      "0.03388039436395315351",
-      "0.07006162430558615650"
     ],
     "sides": [
       "top",
@@ -5189,29 +4836,6 @@
     ]
   },
   {
-    "name": "Stripped Mangrove Log Top",
-    "texture": "stripped_mangrove_log_top.png",
-    "id": "stripped_mangrove_log",
-    "rgb": [
-      109,
-      44,
-      43
-    ],
-    "lab": [
-      "0.38499044295529882831",
-      "0.08559186586762504434",
-      "0.03693072633559890683"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
     "name": "Stripped Oak Wood",
     "texture": "stripped_oak_log.png",
     "id": "stripped_oak_wood",
@@ -5224,29 +4848,6 @@
       "0.67211255727394481063",
       "0.01525368885043543177",
       "0.08501980596903907506"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Stripped Oak Log Top",
-    "texture": "stripped_oak_log_top.png",
-    "id": "stripped_oak_log",
-    "rgb": [
-      162,
-      131,
-      78
-    ],
-    "lab": [
-      "0.62732512331573897502",
-      "0.01408520717184028048",
-      "0.07906450668817072147"
     ],
     "sides": [
       "top",
@@ -5281,29 +4882,6 @@
     ]
   },
   {
-    "name": "Stripped Pale Oak Log Top",
-    "texture": "stripped_pale_oak_log_top.png",
-    "id": "stripped_pale_oak_log",
-    "rgb": [
-      235,
-      227,
-      226
-    ],
-    "lab": [
-      "0.92183907449240654053",
-      "0.00794405390388086552",
-      "0.00387836064185487217"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
     "name": "Stripped Spruce Wood",
     "texture": "stripped_spruce_log.png",
     "id": "stripped_spruce_wood",
@@ -5316,29 +4894,6 @@
       "0.48517422556969036496",
       "0.01568792368227331369",
       "0.06189407988015882545"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Stripped Spruce Log Top",
-    "texture": "stripped_spruce_log_top.png",
-    "id": "stripped_spruce_log",
-    "rgb": [
-      109,
-      81,
-      47
-    ],
-    "lab": [
-      "0.45644905592084722423",
-      "0.02049606484098612236",
-      "0.05827562707272776477"
     ],
     "sides": [
       "top",
@@ -5488,24 +5043,6 @@
     ]
   },
   {
-    "name": "Verdant Froglight Top",
-    "texture": "verdant_froglight_top.png",
-    "id": "verdant_froglight",
-    "rgb": [
-      231,
-      244,
-      230
-    ],
-    "lab": [
-      "0.95360765347931497615",
-      "-0.01852105837095646690",
-      "0.01377046977373252989"
-    ],
-    "sides": [
-      "top"
-    ]
-  },
-  {
     "name": "Warped Nylium",
     "texture": "warped_nylium.png",
     "id": "warped_nylium",
@@ -5536,29 +5073,6 @@
       "0.49189918696695306144",
       "-0.06499860276530772252",
       "-0.00946950232471993614"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Warped Hyphae",
-    "texture": "warped_stem.png",
-    "id": "warped_hyphae",
-    "rgb": [
-      62,
-      67,
-      80
-    ],
-    "lab": [
-      "0.38338396777958044792",
-      "-0.00053015450252838492",
-      "-0.02313379677699434200"
     ],
     "sides": [
       "top",

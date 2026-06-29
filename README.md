@@ -1,6 +1,6 @@
 # TileMapper
 
-A Paper plugin that overlays real-world satellite imagery onto the Minecraft terrain surface.
+A Paper plugin that overlays real-world map tiles onto the Minecraft terrain surface.
 Seamlessly integrates with [TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus) which provides the terrain engine and projection transforms.
 
 > This project is a refactored **plugin** port of the original [TerraSatelliteMapper](https://github.com/tf2mandeokyi/TerraSatelliteMapper) **Minecraft Forge mod** (by [@tf2mandeokyi](https://github.com/tf2mandeokyi)), adapted for Paper 1.21.8+ server environments.
@@ -9,7 +9,7 @@ Seamlessly integrates with [TerraPlusMinus](https://github.com/BTE-Germany/Terra
 
 ## Features
 
-- 🛰️ **Satellite terrain** — Fetches real satellite/aerial imagery from any tile server (OpenStreetMap, custom tile URL, etc.) and converts it to Minecraft blocks
+- �️ **Tile-based terrain** — Fetches map tiles from any tile server (satellite, street map, aerial, etc.) and converts them to Minecraft blocks
 - 🌍 **Tile offset** — `tile_offset` config lets you fine-tune image alignment in block coordinates
 - 🔄 **Hot reload** — `/tsm reload` applies config changes without server restart
 
@@ -36,10 +36,13 @@ Seamlessly integrates with [TerraPlusMinus](https://github.com/BTE-Germany/Terra
 ## Building
 
 ```bash
-git clone https://github.com/YOUR_USER/TileMapper.git
-cd TileMapper
-mvn clean package
+git clone https://github.com/LonghiTW/TerraSatelliteMapper.git
+cd TerraSatelliteMapper
+scripts/setup        # download TerraPlusMinus compile-time dependency
+mvn clean package    # requires JDK 21+
 ```
+
+> **Note:** The setup script downloads TerraPlusMinus JAR into `libs/`. This file is tracked in Git so contributors don't need extra steps.
 
 Output: `target/tilemapper-<version>.jar` (~428 KB, shaded with Gson + bStats).
 
@@ -53,14 +56,15 @@ Output: `target/tilemapper-<version>.jar` (~428 KB, shaded with Gson + bStats).
 # Enable / disable the plugin
 enabled: true
 
-# Active tile source (must match one of the keys under tile_sources:)
-active_source: osm
-
 # Active blockset file (without .json).
-# "custom_blockset" = your local editable copy in blockset/custom_blockset.json
-# Any other name (Default, All, Grayscale, Overworld, Nether&End) =
+# "custom_blockset" = local file in blockset/custom_blockset.json
+#   (initially downloaded from All.json; you may edit or replace it freely).
+# Any other name (Default, All, Grayscale) =
 # read live from the repository (no local file needed).
 active_blockset: "Default"
+
+# Active tile source (must match one of the keys under tile_sources:)
+active_source: osm
 
 # Multiple tile sources — add as many as you want
 tile_sources:
@@ -112,15 +116,14 @@ config_version: "1.0"
 
 ## Blockset — Custom Block Color Mapping
 
-`plugins/TileMapper/blockset/` holds all block color data files, giving you full control over which blocks are used for satellite imagery reproduction.
+`plugins/TileMapper/blockset/` holds all block color data files, giving you full control over which blocks are used for tile image reproduction.
 
 ### How it works
 
 - **Config reference**: `active_blockset` field in `config.yml` selects which blockset to use
-- **Online blocksets** (`All`, `Default`, `Grayscale`, `Overworld`, `Nether&End`) are read **live from the repository** — no local file needed, no manual updates required
-- **Local editable copy**: `custom_blockset.json` — your personal working copy, downloaded from `All.json` on first launch. Edit this file to add or remove blocks without touching the online ones
-- **Hot-update**: Run `/tsm blockset update` to re-download `All.json` as `custom_blockset.json` and reload
-- **Hot-switch**: Use `/tsm blockset <name>` to switch between any online blockset or your local copy
+- **Online blocksets** (`All`, `Default`, `Grayscale`) are read **live from the repository** — no local file needed, no manual updates required
+- **Local blockset**: `custom_blockset.json` — a default local file downloaded from `All.json` on first launch. Edit this file to use your own palette, or replace it entirely with any valid blockset JSON you like.
+- **Hot-switch**: Use `/tsm blockset <name>` to switch between any online blockset or a local file
 
 ### Available blocksets
 
@@ -128,12 +131,10 @@ Blocksets are hosted on the [GitHub repository](https://github.com/LonghiTW/Tile
 
 | File | Source | Description |
 |------|--------|-------------|
-| `custom_blockset` | local `blockset/custom_blockset.json` | Your editable working copy (auto-downloaded from `All.json` on first launch) |
+| `custom_blockset` | local `blockset/custom_blockset.json` | Default local file (auto-downloaded from `All.json` on first launch; freely editable or replaceable) |
 | `All` | repository (online) | All available blocks (full spectrum) |
 | `Default` | repository (online) | Curated palette — good all-round balance |
 | `Grayscale` | repository (online) | Pure grey blocks — activates **luminance-only matching** |
-| `Overworld` | repository (online) | Natural overworld blocks only |
-| `Nether&End` | repository (online) | Nether + End blocks only |
 
 ### JSON format
 
@@ -162,14 +163,13 @@ This means you can safely add your own entries with just `id` + `rgb` — they'l
 
 ```
 plugins/TileMapper/blockset/
-  custom_blockset.json    ← your editable copy (the only local file)
+  custom_blockset.json    ← your local blockset file
 ```
 
+You are free to add any other `.json` files to this folder — just reference them by name in `active_blockset` (without the `.json` extension).
 To restore the default `custom_blockset.json`, delete the `blockset/` folder and restart the server — the plugin will re-download `All.json` from the repository.
 
 > **Color space**: TileMapper uses **Oklab** with Euclidean distance for perceptually-uniform block color matching.
-> This is a significant improvement over CIE2000 delta-E used in earlier versions — Oklab is simpler,
-> faster, and more accurate for colour comparison.
 
 ### Generating a custom blockset
 
@@ -195,7 +195,6 @@ python tool/assets2blockset.py --version 1.21.8 --output my_blockset.json
 | `/tsm source <name>` | `tilemapper.admin` | Switch to a different tile source on the fly |
 | `/tsm blocksets` | `tilemapper.admin` | List all available blockset files |
 | `/tsm blockset <name>` | `tilemapper.admin` | Switch to a different blockset |
-| `/tsm blockset update` | `tilemapper.admin` | Re-download the current blockset from the source URL and reload |
 | `/tsm reload` | `tilemapper.admin` | Hot-reload `config.yml` without restarting |
 
 By default, server operators (OP) have the `tilemapper.admin` permission.

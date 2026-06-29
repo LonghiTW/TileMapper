@@ -309,72 +309,7 @@ DEFAULT_PALETTES = [
             'smoker$', 'stonebrick_mossy.png', 'stonebricksmooth_mossy.png',
             'tinted_glass.png', 'white_glazed_terracotta.png', 'white_terracotta.png',
         ],
-    },
-    {
-        'name': 'Overworld natural blocks',
-        'includes': [
-            '$_coral_block.png', '$_log_top.png', '$_log.png',
-            '$_ore.png', '$azalea_top.png', '$dirt.png', '$ice.png',
-            '$moss_block.png', '$snow.png', 'amethyst_block.png',
-            'andesite.png', 'bedrock.png', 'bee_nest_$',
-            'bone_block_$', 'brown_mushroom_block.png',
-            'brown_terracotta.png', 'budding_amethyst.png',
-            'calcite.png', 'carved_pumpkin.png', 'cinnabar.png',
-            'clay.png', 'cobblestone_mossy.png', 'cobblestone.png',
-            'creaking_heart$', 'dead_$', 'deepslate$', 'diorite.png',
-            'dirt$', 'dripstone_block.png', 'granite.png',
-            'gravel.png', 'hardened_clay_stained_brown.png',
-            'hardened_clay_stained_orange.png',
-            'hardened_clay_stained_red.png',
-            'hardened_clay_stained_silver.png',
-            'hardened_clay_stained_white.png',
-            'hardened_clay_stained_yellow.png', 'hardened_clay.png',
-            'ice_packed.png', 'light_gray_terracotta.png', 'log_$',
-            'magma.png', 'melon$', 'mossy_cobblestone.png',
-            'mud.png', 'muddy_mangrove_roots$', 'mushroom_$',
-            'mycelium$', 'mycel$', 'obsidian.png',
-            'orange_terracotta.png', 'ore$', 'podzol$',
-            'potent_sulfur.png', 'pumpkin$', 'raw_$',
-            'red_mushroom_block.png', 'red_sand$',
-            'red_terracotta.png', 'sand$', 'sculk$',
-            'smooth_basalt.png', 'stone.png', 'stone_andesite.png',
-            'stone_diorite.png', 'stone_granite.png', 'sulfur.png',
-            'terracotta.png', 'tree_$', 'tuff.png',
-            'white_terracotta.png', 'yellow_terracotta.png',
-        ],
-        'excludes': [
-            '$_smooth.png', 'crimson_$', 'deepslate_bricks.png',
-            'deepslate_tiles.png', 'dirt_path_top.png',
-            'grass_path_top.png', 'nether_$', 'pumpkin_jack.png',
-            'quartz_ore.png', 'red_sandstone_carved.png',
-            'sandstone_carved.png', 'warped_$',
-        ],
-    },
-    {
-        'name': 'Nether + End blocks',
-        'includes': [
-            '$_wart_block.png', '$nether_brick.png',
-            '$nether_bricks.png', '$obsidian.png',
-            'ancient_debris_$', 'basalt_$', 'bedrock.png',
-            'blackstone$', 'bone_block_$',
-            'chiseled_nether_bricks.png',
-            'chiseled_polished_blackstone.png', 'crimson_$',
-            'crying_obsidian.png', 'end_$', 'end_stone$',
-            'gilded_blackstone.png', 'glass_magenta.png',
-            'glowstone.png', 'gold_block.png', 'gravel.png',
-            'lightgem.png', 'lodestone$', 'magenta_stained_glass.png',
-            'magma.png', 'nether_wart_block.png', 'nether$',
-            'netherite$', 'netherrack.png', 'polished_basalt_$',
-            'polished_blackstone$', 'purpur_$', 'purpur$',
-            'quartz$', 'respawn_anchor$', 'shroomlight.png',
-            'shulker_box.png', 'shulker_top_purple.png',
-            'smooth_basalt.png', 'soul$', 'stripped_crimson_$',
-            'stripped_warped_$', 'warped_$', 'whitestone.png',
-        ],
-        'excludes': [
-            'crimson_step_top.png', 'warped_stem_top.png',
-        ],
-    },
+    }
 ]
 
 # ============================================================
@@ -385,8 +320,6 @@ PALETTE_OUTPUT_MAP = {
     'All': None,  # Full set, no palette filtering applied
     'Default': 'Default',
     'Grayscale': 'Grayscale blocks',
-    'Overworld': 'Overworld natural blocks',
-    'Nether&End': 'Nether + End blocks',
 }
 
 

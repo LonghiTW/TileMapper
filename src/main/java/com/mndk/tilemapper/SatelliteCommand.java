@@ -163,12 +163,8 @@ public class SatelliteCommand extends Command {
             return true;
         }
         if (args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "Usage: /tsm blockset <name|update>");
+            sender.sendMessage(ChatColor.RED + "Usage: /tsm blockset <name>");
             return true;
-        }
-
-        if (args[1].equalsIgnoreCase("update")) {
-            return handleUpdateBlockset(sender);
         }
 
         String name = args[1];
@@ -178,21 +174,6 @@ public class SatelliteCommand extends Command {
         } else {
             sender.sendMessage(ChatColor.RED + "Blockset not found: " + name
                     + ". Use /tsm blocksets to list available blocksets.");
-        }
-        return true;
-    }
-
-    private boolean handleUpdateBlockset(CommandSender sender) {
-        String currentName = BlockColorRegistry.getCurrentBlockset();
-        if (currentName == null) {
-            sender.sendMessage(ChatColor.RED + "No blockset is currently loaded.");
-            return true;
-        }
-        boolean success = TileMapper.instance.updateBlockset(currentName);
-        if (success) {
-            sender.sendMessage(ChatColor.GREEN + "Blockset '" + currentName + "' downloaded and reloaded.");
-        } else {
-            sender.sendMessage(ChatColor.RED + "Failed to download blockset. Check the console for details.");
         }
         return true;
     }
@@ -207,7 +188,6 @@ public class SatelliteCommand extends Command {
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("blockset")) {
             java.util.List<String> suggestions = new java.util.ArrayList<>();
-            suggestions.add("update");
             suggestions.add("custom_blockset");
             java.util.Collections.addAll(suggestions, BlockColorRegistry.getBundledBlocksets());
             java.util.Collections.sort(suggestions);

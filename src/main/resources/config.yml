@@ -1,11 +1,6 @@
 enabled: true
-active_source: osm
-
-# Active blockset file (without .json).
-# "custom_blockset" = your local editable copy in blockset/custom_blockset.json
-# Any other name (Default, All, Grayscale, Overworld, Nether&End) =
-# read live from the repository (no local file needed).
 active_blockset: "Default"
+active_source: osm
 
 tile_sources:
   osm:

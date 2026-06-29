@@ -53,7 +53,7 @@ public class BlockColorRegistry {
      * The user's editable copy is custom_blockset.json (a copy of All.json).
      */
     private static final String[] BUNDLED_BLOCKSETS = {
-            "All", "Default", "Grayscale", "Overworld", "Nether&End"
+            "All", "Default", "Grayscale"
     };
 
     /** Threshold for the lab-vs-rgb sanity check (Euclidean distance in Oklab). */

@@ -50,5 +50,8 @@ Desktop.ini
 hs_err_pid*
 replay_pid*
 
+# Keep libs/*.jar (compile-time dependencies)
+!libs/*.jar
+
 ### Logs ###
 *.log

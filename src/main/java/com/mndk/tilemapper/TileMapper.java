@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.BufferedReader;
@@ -37,6 +38,7 @@ public class TileMapper extends JavaPlugin implements Listener {
     private PluginConfig pluginConfig;
     private TileServer tileServer;
     private ChunkProcessor processor;
+    private SatelliteBlockPopulator populator;
     private boolean populatorActive = false;
 
     @Override
@@ -75,17 +77,15 @@ public class TileMapper extends JavaPlugin implements Listener {
         // 4. 初始化 ChunkProcessor (fallback for ChunkLoadEvent)
         this.processor = new ChunkProcessor(tileServer, pluginConfig, this);
 
-        // 5. 註冊 BlockPopulator — 會在 chunk 生成 pipeline 中執行 (跟 T+- TreePopulator 同時期)
-        SatelliteBlockPopulator populator = new SatelliteBlockPopulator(tileServer, pluginConfig, this);
+        // 5. 初始化 BlockPopulator
+        this.populator = new SatelliteBlockPopulator(tileServer, pluginConfig, this);
+
+        // 嘗試註冊到已載入的世界（通常此時還沒有世界，但 best-effort）
         for (World world : getServer().getWorlds()) {
-            if (world.getGenerator() instanceof RealWorldGenerator) {
-                world.getPopulators().add(populator);
-                this.populatorActive = true;
-                getLogger().info("Registered SatelliteBlockPopulator for world '" + world.getName() + "'");
-            }
+            tryRegisterPopulator(world);
         }
         if (!populatorActive) {
-            getLogger().warning("No world with RealWorldGenerator found — BlockPopulator not registered, will rely on ChunkLoadEvent fallback");
+            getLogger().info("No world loaded yet — will register BlockPopulator on WorldLoadEvent");
         }
 
         // 6. 註冊 ChunkLoadEvent 監聽（作為備援）
@@ -117,6 +117,23 @@ public class TileMapper extends JavaPlugin implements Listener {
         // Fallback: 若 BlockPopulator 未註冊（例如非 T+- 世界），改由 ChunkLoadEvent 處理
         Chunk chunk = event.getChunk();
         processor.processChunk(chunk);
+    }
+
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onWorldLoad(WorldLoadEvent event) {
+        if (populatorActive) return; // 已經有註冊成功的 populator
+        tryRegisterPopulator(event.getWorld());
+    }
+
+    /**
+     * 嘗試將 BlockPopulator 註冊到指定世界（僅限 T+- 世界）。
+     */
+    private void tryRegisterPopulator(World world) {
+        if (world.getGenerator() instanceof RealWorldGenerator) {
+            world.getPopulators().add(populator);
+            this.populatorActive = true;
+            getLogger().info("Registered SatelliteBlockPopulator for world '" + world.getName() + "'");
+        }
     }
 
     @Override
@@ -217,27 +234,6 @@ public class TileMapper extends JavaPlugin implements Listener {
 
     public TileServer getTileServer() {
         return tileServer;
-    }
-
-    /**
-     * Re-download {@code All.json} from the repository as
-     * {@code custom_blockset.json}, then reload the currently active blockset.
-     * @return true if the download succeeded
-     */
-    public boolean updateBlockset(String name) {
-        File blocksetFolder = new File(getDataFolder(), "blockset");
-        File customFile = new File(blocksetFolder, "custom_blockset.json");
-
-        boolean downloaded = BlockColorRegistry.downloadDefaultBlockset(BLOCKSET_BASE_URL, customFile);
-        if (!downloaded) {
-            return false;
-        }
-
-        BlockColorRegistry.reset();
-        BlockColorRegistry.init(blocksetFolder, BLOCKSET_BASE_URL, name);
-        getLogger().info("Blockset update complete: custom_blockset.json refreshed, "
-                + "reloaded '" + name + "'");
-        return true;
     }
 
     /**

@@ -1,7 +1,7 @@
 # TileMapper
 
-A Paper plugin that overlays real-world map tiles onto the Minecraft terrain surface.
-Seamlessly integrates with [TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus) which provides the terrain engine and projection transforms.
+A Paper plugin that overlays real-world map tiles onto the Minecraft terrain surface using the BTE projection.
+Seamlessly integrates with [TerraPlusMinus](https://github.com/BTE-Germany/TerraPlusMinus) which provides the terrain engine and generation pipeline.
 
 > This project is a refactored **plugin** port of the original [TerraSatelliteMapper](https://github.com/tf2mandeokyi/TerraSatelliteMapper) **Minecraft Forge mod** (by [@tf2mandeokyi](https://github.com/tf2mandeokyi)), adapted for Paper 1.21.8+ server environments.
 

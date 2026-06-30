@@ -80,7 +80,12 @@ public class SatelliteBlockPopulator extends BlockPopulator {
         if (!config.isEnabled()) return;
         ensureInit();
         if (groundHeightMethod == null) {
-            LOGGER.warning("SatelliteBlockPopulator: groundHeightMethod not available (reflection failed?), skipping chunk [" + chunkX + ", " + chunkZ + "]");
+            LOGGER.warning("SatelliteBlockPopulator: groundHeightMethod not available, skipping chunk [" + chunkX + ", " + chunkZ + "]");
+            return;
+        }
+        if (getBaseHeightAsyncMethod == null) {
+            LOGGER.severe("SatelliteBlockPopulator: getBaseHeightAsync not found — T+- version is too old.");
+            LOGGER.severe("TileMapper requires TerraPlusMinus 1.6.1+. Skipping chunk [" + chunkX + ", " + chunkZ + "]");
             return;
         }
         World world = Bukkit.getWorld(worldInfo.getName());

@@ -101,8 +101,13 @@ public class ChunkProcessor {
 
             CompletableFuture<?> future = rwg.getBaseHeightAsync(chunkX, chunkZ);
             cachedChunkData = future.join();
-        } catch (Exception e) {
-            LOGGER.warning("Failed to get height data: " + e.getMessage());
+        } catch (Throwable t) {
+            if (t instanceof NoSuchMethodError) {
+                LOGGER.severe("TerraPlusMinus version is too old! getBaseHeightAsync(int,int) not found.");
+                LOGGER.severe("TileMapper requires TerraPlusMinus 1.6.1+ — please update the plugin.");
+            } else {
+                LOGGER.warning("Failed to get height data: " + t.getMessage());
+            }
             return;
         }
 

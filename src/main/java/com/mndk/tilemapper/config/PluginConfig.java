@@ -53,8 +53,10 @@ public class PluginConfig {
                 int zoom = sourcesSection.getInt(key + ".zoom", 14);
                 double ox = sourcesSection.getDouble(key + ".offset.x", 0);
                 double oz = sourcesSection.getDouble(key + ".offset.z", 0);
+                boolean invertZoom = sourcesSection.getBoolean(key + ".invert_zoom", false);
+                boolean invertLat = sourcesSection.getBoolean(key + ".invert_lat", false);
                 if (url != null && !url.isEmpty()) {
-                    tileSources.put(key, new TileSource(url, zoom, ox, oz));
+                    tileSources.put(key, new TileSource(url, zoom, ox, oz, invertZoom, invertLat));
                 }
             }
         }
@@ -120,6 +122,11 @@ public class PluginConfig {
     public boolean isEnabled() { return enabled; }
     public Map<String, TileSource> getTileSources() { return tileSources; }
     public String getActiveSourceName() { return activeSourceName; }
+
+    /** Returns the currently active {@link TileSource}, or null if somehow missing. */
+    public TileSource getActiveSource() {
+        return tileSources.get(activeSourceName);
+    }
     public int getMaxConcurrentRequests() { return maxConcurrentRequests; }
     public int getCacheSize() { return cacheSize; }
     public boolean isSurfaceBlockMask() { return surfaceBlockMask; }

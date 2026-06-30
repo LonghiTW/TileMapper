@@ -1,10 +1,12 @@
+# Config Documentation: https://github.com/LonghiTW/TileMapper/wiki
+
 enabled: true
 active_blockset: "Default"
 active_source: osm
 
 tile_sources:
   osm:
-    url: "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+    url: "https://{random:a,b,c}.tile.openstreetmap.org/{z}/{x}/{y}.png"
     zoom: 18
     offset:
       x: 0

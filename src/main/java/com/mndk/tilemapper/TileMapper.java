@@ -2,6 +2,7 @@ package com.mndk.tilemapper;
 
 import com.mndk.tilemapper.block.BlockColorRegistry;
 import com.mndk.tilemapper.config.PluginConfig;
+import com.mndk.tilemapper.config.TileSource;
 import com.mndk.tilemapper.processor.ChunkProcessor;
 import com.mndk.tilemapper.processor.SatelliteBlockPopulator;
 import com.mndk.tilemapper.tile.TilePosToUrlFunction;
@@ -19,6 +20,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.BufferedReader;
@@ -26,6 +28,9 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TileMapper extends JavaPlugin implements Listener {
 
@@ -40,17 +45,22 @@ public class TileMapper extends JavaPlugin implements Listener {
     private ChunkProcessor processor;
     private SatelliteBlockPopulator populator;
     private boolean populatorActive = false;
+    /** false when T+- version is too old (pre-1.6.1). */
+    private boolean tplusCompatible = true;
 
     @Override
     public void onEnable() {
         instance = this;
 
-        // 1. 載入 config
+        // 1. Load config
         this.pluginConfig = new PluginConfig(this);
 
-        // 2. 初始化 blockset 資料夾 (plugins/TileMapper/blockset/)
-        //    僅 custom_blockset.json 存在於此 — 從 GitHub 下載 All.json 存放。
-        //    其他 blocksets（Default、All、Grayscale…）直接從 repo URL 讀取。
+        // 1b. Check T+- version (≥ 1.6.1 required for getBaseHeightAsync(int,int))
+        checkTplusVersion();
+
+        // 2. Initialise blockset directory (plugins/TileMapper/blockset/)
+        //    Only custom_blockset.json lives here (auto-downloaded from All.json).
+        //    Online blocksets (Default, All, Grayscale) are read from the repo URL at runtime.
         File blocksetFolder = new File(getDataFolder(), "blockset");
         if (!blocksetFolder.exists()) {
             blocksetFolder.mkdirs();
@@ -66,67 +76,79 @@ public class TileMapper extends JavaPlugin implements Listener {
 
         BlockColorRegistry.init(blocksetFolder, BLOCKSET_BASE_URL, pluginConfig.getActiveBlockset());
 
-        // 3. 初始化 TileServer
+        // Skip TileServer/Processor/Populator init if T+- version is too old
+        if (!tplusCompatible) {
+            getLogger().severe("========================================================");
+            getLogger().severe("  TileMapper processing disabled due to outdated T+- version.");
+            getLogger().severe("  Please update TerraPlusMinus to v1.6.1 or later.");
+            getLogger().severe("========================================================");
+        } else {
+            initTileServerAndProcessors();
+        }
+
+        // 6. Register ChunkLoadEvent listener (fallback)
+        getServer().getPluginManager().registerEvents(this, this);
+
+        // 7. Register commands
+        SatelliteCommand command = new SatelliteCommand(pluginConfig, processor, tileServer);
+        command.register(this);
+
+        // 8. bStats metrics
+        int pluginId = 0; // TODO: register at https://bstats.org/ and fill in plugin ID
+        if (pluginId > 0) {
+            new Metrics(this, pluginId);
+        }
+
+        // 9. Async version check (GitHub release)
+        Bukkit.getScheduler().runTaskAsynchronously(this, this::checkVersion);
+
+        getLogger().info("TileMapper v" + getPluginMeta().getVersion() + " enabled" +
+                (tplusCompatible ? "" : " (T+- INCOMPATIBLE — processing disabled)") +
+                " (tile offset: " + pluginConfig.getTileOffsetX() + ", " +
+                pluginConfig.getTileOffsetZ() + ")");
+    }
+
+    /** Initialise tile server, chunk processor and block populator. */
+    private void initTileServerAndProcessors() {
+        TileSource initSource = pluginConfig.getActiveSource();
+        boolean initInvertLat = initSource != null && initSource.invertLat();
         this.tileServer = new TileServer(
-                new WebMercatorTileProjection(false),
+                new WebMercatorTileProjection(initInvertLat),
                 buildUrlFunction(),
                 pluginConfig.getMaxConcurrentRequests(),
                 pluginConfig.getCacheSize()
         );
-
-        // 4. 初始化 ChunkProcessor (fallback for ChunkLoadEvent)
         this.processor = new ChunkProcessor(tileServer, pluginConfig, this);
-
-        // 5. 初始化 BlockPopulator
         this.populator = new SatelliteBlockPopulator(tileServer, pluginConfig, this);
 
-        // 嘗試註冊到已載入的世界（通常此時還沒有世界，但 best-effort）
         for (World world : getServer().getWorlds()) {
             tryRegisterPopulator(world);
         }
         if (!populatorActive) {
             getLogger().info("No world loaded yet — will register BlockPopulator on WorldLoadEvent");
         }
-
-        // 6. 註冊 ChunkLoadEvent 監聽（作為備援）
-        getServer().getPluginManager().registerEvents(this, this);
-
-        // 7. 註冊指令
-        SatelliteCommand command = new SatelliteCommand(pluginConfig, processor, tileServer);
-        command.register(this);
-
-        // 8. bStats 指標
-        int pluginId = 0; // TODO: register at https://bstats.org/ and fill in plugin ID
-        if (pluginId > 0) {
-            new Metrics(this, pluginId);
-        }
-
-        // 9. 非同步版本檢查
-        Bukkit.getScheduler().runTaskAsynchronously(this, this::checkVersion);
-
-        getLogger().info("TileMapper enabled (tile offset: " +
-                pluginConfig.getTileOffsetX() + ", " + pluginConfig.getTileOffsetZ() + ")");
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onChunkGenerate(ChunkLoadEvent event) {
         if (!pluginConfig.isEnabled()) return;
         if (!event.isNewChunk()) return;
-        // 優先由 BlockPopulator 處理（若有註冊），ChunkLoadEvent 作為 FAWE //regen 等情況的備援。
-        // 若是正常 chunk 生成，BlockPopulator 已先處理過，ChunkProcessor 中 block
-        // 若已是目標材質會自動略過 (sameSkipped)，因此雙重處理是安全的。
+        if (!tplusCompatible) return;
+        // BlockPopulator handles normal generation; ChunkLoadEvent is a fallback for FAWE //regen etc.
+        // Dual processing is safe — ChunkProcessor skips blocks already set by the populator (sameSkipped).
         Chunk chunk = event.getChunk();
         processor.processChunk(chunk);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onWorldLoad(WorldLoadEvent event) {
+        if (!tplusCompatible) return;
         if (populatorActive) return;
         tryRegisterPopulator(event.getWorld());
     }
 
     /**
-     * 嘗試將 BlockPopulator 註冊到指定世界（僅限 T+- 世界）。
+     * Register the BlockPopulator on a world if it uses a RealWorldGenerator (T+-).
      */
     private void tryRegisterPopulator(World world) {
         if (world.getGenerator() instanceof RealWorldGenerator) {
@@ -152,8 +174,12 @@ public class TileMapper extends JavaPlugin implements Listener {
         File blocksetFolder = new File(getDataFolder(), "blockset");
         BlockColorRegistry.init(blocksetFolder, BLOCKSET_BASE_URL, pluginConfig.getActiveBlockset());
 
-        getLogger().info("Configuration reloaded (blockset: " + pluginConfig.getActiveBlockset()
-                + ", " + BlockColorRegistry.getMappingCount() + " block colours).");
+        if (tplusCompatible) {
+            getLogger().info("Configuration reloaded (blockset: " + pluginConfig.getActiveBlockset()
+                    + ", " + BlockColorRegistry.getMappingCount() + " block colours).");
+        } else {
+            getLogger().warning("Configuration reloaded but T+- version is incompatible — processing disabled.");
+        }
     }
 
     /**
@@ -165,6 +191,10 @@ public class TileMapper extends JavaPlugin implements Listener {
         if (!pluginConfig.getTileSources().containsKey(name)) {
             return false;
         }
+        if (!tplusCompatible) {
+            getLogger().warning("Cannot switch tile source: T+- version is incompatible.");
+            return false;
+        }
         pluginConfig.setActiveSource(name);
 
         // Shut down old tile server
@@ -172,16 +202,19 @@ public class TileMapper extends JavaPlugin implements Listener {
             tileServer.getExecutorService().shutdown();
         }
 
-        // Rebuild TileServer with new URL function
+        // Rebuild TileServer with new URL function (per-source invertLat)
+        TileSource switchSource = pluginConfig.getActiveSource();
+        boolean switchInvertLat = switchSource != null && switchSource.invertLat();
         this.tileServer = new TileServer(
-                new WebMercatorTileProjection(false),
+                new WebMercatorTileProjection(switchInvertLat),
                 buildUrlFunction(),
                 pluginConfig.getMaxConcurrentRequests(),
                 pluginConfig.getCacheSize()
         );
         this.processor.setTileServer(this.tileServer);
 
-        getLogger().info("Switched to tile source: " + name);
+        getLogger().info("Switched to tile source: " + name
+                + " (invertLat=" + switchInvertLat + ")");
         return true;
     }
 
@@ -210,12 +243,84 @@ public class TileMapper extends JavaPlugin implements Listener {
         return true;
     }
 
+    // ---- T+- version check ----
+
+    /**
+     * Check whether the installed TerraPlusMinus version is ≥ 1.6.1.
+     * Sets {@link #tplusCompatible} to false if not.
+     */
+    private void checkTplusVersion() {
+        Plugin tplus = getServer().getPluginManager().getPlugin("Terraplusminus");
+        if (tplus == null) {
+            getLogger().severe("TerraPlusMinus not found! TileMapper cannot function without it.");
+            tplusCompatible = false;
+            return;
+        }
+        String version = tplus.getPluginMeta().getVersion();
+        if (!isVersionAtLeast(version, "1.6.1")) {
+            getLogger().severe("TerraPlusMinus v" + version + " detected — v1.6.1+ is required!");
+            getLogger().severe("TileMapper needs RealWorldGenerator.getBaseHeightAsync(int,int),");
+            getLogger().severe("which was added in T+- 1.6.1. Please update TerraPlusMinus.");
+            tplusCompatible = false;
+        } else {
+            getLogger().info("TerraPlusMinus v" + version + " detected — OK");
+        }
+    }
+
+    /** Simple three-segment version comparison (major.minor.patch). */
+    private static boolean isVersionAtLeast(String version, String required) {
+        try {
+            String[] vParts = version.split("-")[0].split("\\.");
+            String[] rParts = required.split("\\.");
+            int max = Math.max(vParts.length, rParts.length);
+            for (int i = 0; i < max; i++) {
+                int v = i < vParts.length ? Integer.parseInt(vParts[i]) : 0;
+                int r = i < rParts.length ? Integer.parseInt(rParts[i]) : 0;
+                if (v != r) return v > r;
+            }
+            return true;
+        } catch (Exception e) {
+            return false; // treat unparseable versions as incompatible
+        }
+    }
+
+    /** Pattern for {random:v1,v2,v3} placeholders. */
+    private static final Pattern RANDOM_PATTERN =
+            Pattern.compile("\\{random:([^}]+)}");
+
+    public boolean isTplusCompatible() {
+        return tplusCompatible;
+    }
+
     private TilePosToUrlFunction buildUrlFunction() {
         return pos -> {
+            TileSource source = pluginConfig.getActiveSource();
             String quadKey = com.mndk.tilemapper.util.TileQuadKey.toQuadKey(pos);
             String bingU = com.mndk.tilemapper.util.TileQuadKey.toBingU(pos.x, pos.y, pos.zoom);
-            String urlStr = pluginConfig.getTileUrl()
-                    .replace("{z}", String.valueOf(pos.zoom))
+
+            // 1. Resolve {random:v1,v2,v3} — pick one value at random
+            String urlStr = pluginConfig.getTileUrl();
+            Matcher m = RANDOM_PATTERN.matcher(urlStr);
+            StringBuffer sb = new StringBuffer();
+            while (m.find()) {
+                String[] parts = m.group(1).split(",");
+                String chosen = parts[ThreadLocalRandom.current().nextInt(parts.length)];
+                m.appendReplacement(sb, Matcher.quoteReplacement(chosen));
+            }
+            m.appendTail(sb);
+            urlStr = sb.toString();
+
+            // 2. Invert zoom if enabled
+            int urlZoom;
+            if (source != null && source.invertZoom()) {
+                urlZoom = source.zoom() - pos.zoom;
+            } else {
+                urlZoom = pos.zoom;
+            }
+
+            // 3. Standard variable substitution
+            urlStr = urlStr
+                    .replace("{z}", String.valueOf(urlZoom))
                     .replace("{x}", String.valueOf(pos.x))
                     .replace("{y}", String.valueOf(pos.y))
                     .replace("{quadkey}", quadKey)

@@ -14,5 +14,8 @@ dependencies:
 
 permissions:
   tilemapper.admin:
-    description: 允許使用 /tsm 指令
+    description: Allows using /tsm admin commands (reload, status, sources, source, blocksets, blockset)
     default: op
+  tilemapper.player:
+    description: Allows using /tsm generate to create tile planes in a WorldEdit selection
+    default: true

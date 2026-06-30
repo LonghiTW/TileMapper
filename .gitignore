@@ -23,6 +23,7 @@ out/
 
 ### Project ###
 .reference/
+.wiki/
 
 ### IDE - Eclipse ###
 .classpath

@@ -3,6 +3,7 @@ package com.mndk.tilemapper;
 import com.mndk.tilemapper.block.BlockColorRegistry;
 import com.mndk.tilemapper.config.PluginConfig;
 import com.mndk.tilemapper.config.TileSource;
+import com.mndk.tilemapper.player.SelectionTileGenerator;
 import com.mndk.tilemapper.processor.ChunkProcessor;
 import com.mndk.tilemapper.tile.server.TileServer;
 import org.bukkit.ChatColor;
@@ -23,8 +24,8 @@ public class SatelliteCommand extends Command {
 
     public SatelliteCommand(PluginConfig config, ChunkProcessor processor, TileServer tileServer) {
         super("tsm",
-                "TileMapper 管理指令",
-                "/tsm <reload|status|sources|source|blocksets|blockset>",
+                "TileMapper admin command",
+                "/tsm <reload|status|sources|source|blocksets|blockset|generate>",
                 List.of());
         this.config = config;
         this.processor = processor;
@@ -55,9 +56,11 @@ public class SatelliteCommand extends Command {
                 return handleListBlocksets(sender);
             case "blockset":
                 return handleSwitchBlockset(sender, args);
+            case "generate":
+                return handleGenerate(sender, args);
             default:
                 sender.sendMessage(ChatColor.RED + "Unknown subcommand: " + args[0]);
-                sender.sendMessage(ChatColor.RED + "Available: reload, status, sources, source <name>, blocksets, blockset <name>");
+                sender.sendMessage(ChatColor.RED + "Available: reload, status, sources, source <name>, blocksets, blockset <name>, generate [blockset] [source] [xoffset zoffset]");
                 return false;
         }
     }
@@ -77,8 +80,14 @@ public class SatelliteCommand extends Command {
     }
 
     private boolean handleStatus(CommandSender sender) {
+        TileMapper plugin = TileMapper.instance;
         sender.sendMessage(ChatColor.GOLD + "=== TileMapper Status ===");
+        sender.sendMessage(ChatColor.YELLOW + "Version: " + plugin.getPluginMeta().getVersion());
         sender.sendMessage(ChatColor.YELLOW + "Enabled: " + (config.isEnabled() ? "yes" : "no"));
+        sender.sendMessage(ChatColor.YELLOW + "T+- Compatible: " + (plugin.isTplusCompatible() ? "yes" : ChatColor.RED + "NO — requires v1.6.1+"));
+        if (!plugin.isTplusCompatible()) {
+            sender.sendMessage(ChatColor.RED + "  ↳ Tile processing is DISABLED. Update TerraPlusMinus to v1.6.1+ and restart.");
+        }
         sender.sendMessage(ChatColor.YELLOW + "Active Source: " + config.getActiveSourceName());
         sender.sendMessage(ChatColor.YELLOW + "Tile URL: " + config.getTileUrl());
         sender.sendMessage(ChatColor.YELLOW + "Zoom: " + config.getZoom());
@@ -178,10 +187,59 @@ public class SatelliteCommand extends Command {
         return true;
     }
 
+    /**
+     * Handle the /tsm generate command.
+     * Syntax: /tsm generate [blockset] [source] [xoffset zoffset]
+     * All parameters are optional — defaults come from server config.
+     */
+    private boolean handleGenerate(CommandSender sender, String[] args) {
+        if (!(sender instanceof org.bukkit.entity.Player)) {
+            sender.sendMessage(ChatColor.RED + "Only players can use this command");
+            return true;
+        }
+        if (!sender.hasPermission("tilemapper.player")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission to run this command");
+            return true;
+        }
+
+        // Parse optional arguments
+        String blockset = null;
+        String source = null;
+        Double xoff = null, zoff = null;
+
+        if (args.length >= 2) blockset = args[1];
+        if (args.length >= 3) source = args[2];
+        if (args.length >= 5) {
+            try {
+                xoff = Double.parseDouble(args[3]);
+                zoff = Double.parseDouble(args[4]);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED + "Invalid offset values. Usage: /tsm generate [blockset] [source] [xoffset zoffset]");
+                return true;
+            }
+        } else if (args.length == 4) {
+            sender.sendMessage(ChatColor.RED + "Offset requires both X and Z values. Usage: /tsm generate [blockset] [source] <xoffset zoffset>");
+            return true;
+        }
+
+        SelectionTileGenerator.generate(
+                (org.bukkit.entity.Player) sender,
+                blockset, source, xoff, zoff,
+                config, TileMapper.instance
+        );
+        return true;
+    }
+
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
         if (args.length == 1) {
-            return List.of("reload", "status", "sources", "source", "blocksets", "blockset");
+            java.util.List<String> cmds = new java.util.ArrayList<>(
+                    List.of("reload", "status", "sources", "source", "blocksets", "blockset", "generate"));
+            // Only show generate to players with tilemapper.player
+            if (!sender.hasPermission("tilemapper.player")) {
+                cmds.remove("generate");
+            }
+            return cmds;
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("source")) {
             return List.copyOf(config.getTileSources().keySet());
@@ -193,6 +251,18 @@ public class SatelliteCommand extends Command {
             java.util.Collections.sort(suggestions);
             return suggestions;
         }
-        return Collections.emptyList();
+        if (args.length == 2 && args[0].equalsIgnoreCase("generate")) {
+            // Suggest blocksets
+            java.util.List<String> suggestions = new java.util.ArrayList<>();
+            java.util.Collections.addAll(suggestions, BlockColorRegistry.getBundledBlocksets());
+            suggestions.add("custom_blockset");
+            java.util.Collections.sort(suggestions);
+            return suggestions;
+        }
+        if (args.length == 3 && args[0].equalsIgnoreCase("generate")) {
+            // Suggest tile sources
+            return List.copyOf(config.getTileSources().keySet());
+        }
+        return super.tabComplete(sender, alias, args);
     }
 }

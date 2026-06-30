@@ -112,16 +112,16 @@ public class TileMapper extends JavaPlugin implements Listener {
     public void onChunkGenerate(ChunkLoadEvent event) {
         if (!pluginConfig.isEnabled()) return;
         if (!event.isNewChunk()) return;
-        // 如果 BlockPopulator 已成功註冊，主流程由它處理，此處跳過避免重複
-        if (populatorActive) return;
-        // Fallback: 若 BlockPopulator 未註冊（例如非 T+- 世界），改由 ChunkLoadEvent 處理
+        // 優先由 BlockPopulator 處理（若有註冊），ChunkLoadEvent 作為 FAWE //regen 等情況的備援。
+        // 若是正常 chunk 生成，BlockPopulator 已先處理過，ChunkProcessor 中 block
+        // 若已是目標材質會自動略過 (sameSkipped)，因此雙重處理是安全的。
         Chunk chunk = event.getChunk();
         processor.processChunk(chunk);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onWorldLoad(WorldLoadEvent event) {
-        if (populatorActive) return; // 已經有註冊成功的 populator
+        if (populatorActive) return;
         tryRegisterPopulator(event.getWorld());
     }
 

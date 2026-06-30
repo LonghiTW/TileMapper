@@ -79,9 +79,15 @@ public class SatelliteBlockPopulator extends BlockPopulator {
     public void populate(WorldInfo worldInfo, Random random, int chunkX, int chunkZ, LimitedRegion limitedRegion) {
         if (!config.isEnabled()) return;
         ensureInit();
-        if (groundHeightMethod == null) return;
+        if (groundHeightMethod == null) {
+            LOGGER.warning("SatelliteBlockPopulator: groundHeightMethod not available (reflection failed?), skipping chunk [" + chunkX + ", " + chunkZ + "]");
+            return;
+        }
         World world = Bukkit.getWorld(worldInfo.getName());
-        if (world == null) return;
+        if (world == null) {
+            LOGGER.warning("SatelliteBlockPopulator: world '" + worldInfo.getName() + "' not found, skipping chunk [" + chunkX + ", " + chunkZ + "]");
+            return;
+        }
         if (!(world.getGenerator() instanceof RealWorldGenerator rwg)) return;
         int yOffset = rwg.getYOffset();
         Object cachedChunkData;
@@ -89,25 +95,36 @@ public class SatelliteBlockPopulator extends BlockPopulator {
             Object future = getBaseHeightAsyncMethod.invoke(rwg, chunkX, chunkZ);
             cachedChunkData = ((java.util.concurrent.CompletableFuture<?>) future).join();
         } catch (Exception e) {
+            LOGGER.warning("SatelliteBlockPopulator: failed to get height data at chunk [" + chunkX + ", " + chunkZ + "]: " + e.getMessage());
             return;
         }
-        int applied = 0, maskSkipped = 0, sameSkipped = 0;
+        int applied = 0, noSurface = 0, outside = 0, tileFail = 0;
+        int noColor = 0, noBlock = 0, maskSkipped = 0, sameSkipped = 0;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 int surfaceY;
                 try {
                     surfaceY = (int) groundHeightMethod.invoke(cachedChunkData, x, z) + yOffset;
-                } catch (Exception e) { continue; }
+                } catch (Exception e) { noSurface++; continue; }
                 double bx = (chunkX << 4) + x + tileOffsetX;
                 double bz = (chunkZ << 4) + z + tileOffsetZ;
                 double[] geo;
-                try { geo = TerraConnector.toGeo(bx, bz); } catch (Exception e) { continue; }
+                try { geo = TerraConnector.toGeo(bx, bz); } catch (Exception e) { outside++; continue; }
                 TileImageData tile;
-                try { tile = tileServer.fetch(geo[0], geo[1], config.getZoom()).join(); } catch (Exception e) { continue; }
+                try {
+                    tile = tileServer.fetch(geo[0], geo[1], config.getZoom()).join();
+                } catch (Exception e) {
+                    if (tileFail == 0) {
+                        LOGGER.warning("Populator tile fetch failed at [" + chunkX + "," + chunkZ +
+                                "] geo=(" + String.format("%.4f", geo[0]) + ", " + String.format("%.4f", geo[1]) + "): " + e.getMessage());
+                    }
+                    tileFail++;
+                    continue;
+                }
                 RGBColorDouble color = tile.getRGBByGeoCoordinate(geo[0], geo[1]);
-                if (color == null) continue;
+                if (color == null) { noColor++; continue; }
                 Material material = BlockColorRegistry.getNearestBlock(color.toRGBColor());
-                if (material == null) continue;
+                if (material == null) { noBlock++; continue; }
                 int wx = (chunkX << 4) + x;
                 int wz = (chunkZ << 4) + z;
                 Material original = limitedRegion.getBlockData(wx, surfaceY, wz).getMaterial();
@@ -117,8 +134,12 @@ public class SatelliteBlockPopulator extends BlockPopulator {
                 applied++;
             }
         }
-        if (applied > 0) {
-            LOGGER.fine("Populated chunk [" + chunkX + ", " + chunkZ + "] " + applied + " blocks (mask=" + maskSkipped + " same=" + sameSkipped + ")");
+        int totalSkipped = noSurface + outside + tileFail + noColor + noBlock + maskSkipped + sameSkipped;
+        if (applied > 0 || totalSkipped > 0) {
+            LOGGER.info("Populated chunk [" + chunkX + ", " + chunkZ + "] " + applied +
+                    " changes (noSurface=" + noSurface + " outside=" + outside +
+                    " tileFail=" + tileFail + " noColor=" + noColor + " noBlock=" + noBlock +
+                    " mask=" + maskSkipped + " same=" + sameSkipped + ")");
         }
     }
 }

@@ -2,22 +2,15 @@ package com.mndk.tilemapper.tile.projection;
 
 import com.mndk.tilemapper.tile.TilePosition;
 import com.mndk.tilemapper.util.Bounds2d;
-import lombok.RequiredArgsConstructor;
-
-@RequiredArgsConstructor
 public class WebMercatorTileProjection implements TileServerProjection {
 
-    public final boolean invertLatitude;
-
     public WebMercatorTileProjection() {
-        this(false);
     }
 
     @Override
     public double[] toGeoCoordinates(TilePosition pos) {
         double divisor = Math.pow(2, pos.zoom);
         double latRad = Math.atan(Math.sinh(Math.PI - (2.0 * Math.PI * pos.y) / divisor));
-        if (invertLatitude) latRad = -latRad;
         return new double[] {
                 (pos.x * 360 / divisor) - 180,
                 Math.toDegrees(latRad)
@@ -28,7 +21,6 @@ public class WebMercatorTileProjection implements TileServerProjection {
     public TilePosition toTileCoordinates(double lon, double lat, int zoom) {
         double factor = Math.pow(2, zoom);
         double a = Math.log(Math.tan(Math.toRadians(lat)) + (1 / Math.cos(Math.toRadians(lat)))) / Math.PI;
-        if (invertLatitude) a = -a;
         return new TilePosition(
                 (int) Math.floor(factor * (lon + 180) / 360),
                 (int) Math.floor(factor * (1 - a) / 2),
@@ -40,7 +32,6 @@ public class WebMercatorTileProjection implements TileServerProjection {
     public double[] toDoubleTileCoordinates(double lon, double lat, int zoom) {
         double factor = Math.pow(2, zoom);
         double a = Math.log(Math.tan(Math.toRadians(lat)) + (1 / Math.cos(Math.toRadians(lat)))) / Math.PI;
-        if (invertLatitude) a = -a;
         return new double[] {
                 factor * (lon + 180) / 360,
                 factor * (1 - a) / 2

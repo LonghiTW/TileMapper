@@ -3,8 +3,8 @@ package com.mndk.tilemapper.player;
 import com.mndk.tilemapper.block.BlockColorRegistry;
 import com.mndk.tilemapper.config.PluginConfig;
 import com.mndk.tilemapper.config.TileSource;
+import com.mndk.tilemapper.tile.TileCoordTranslator;
 import com.mndk.tilemapper.tile.TilePosition;
-import com.mndk.tilemapper.tile.projection.TileServerProjection;
 import com.mndk.tilemapper.tile.projection.WebMercatorTileProjection;
 import com.mndk.tilemapper.util.RGBColorDouble;
 import com.mndk.tilemapper.util.TileQuadKey;
@@ -87,7 +87,8 @@ public class SelectionTileGenerator {
         double effOffsetX = optOffsetX != null ? optOffsetX : source.offsetX();
         double effOffsetZ = optOffsetZ != null ? optOffsetZ : source.offsetZ();
         int zoom = source.zoom();
-        TileServerProjection projection = new WebMercatorTileProjection(source.invertLat());
+        TileCoordTranslator coordTranslator = new TileCoordTranslator(
+                new WebMercatorTileProjection(), source.invertLat(), source.flipVertically());
         String urlTemplate = source.url();
 
         // --- Get WorldEdit selection (pure reflection for FAWE classloader compat) ---
@@ -115,8 +116,10 @@ public class SelectionTileGenerator {
         Object minPoint, maxPoint;
         int maxY;
         int minX, minZ, maxX_val, maxZ_val;
-        Class<?> f_clsRegion, f_clsBV3;
-        Object f_region;
+        Class<?> f_clsRegion, f_clsBV3, f_clsEditSession, f_clsBlockStateHolder;
+        Object f_region, f_session, f_wePlayer;
+        Method f_createEditSession, f_setBlock, f_flushSession, f_remember;
+        Method f_adaptBlockData, f_atMethod;
         try {
             // Load all needed WE types via FAWE's classloader
             Class<?> clsWorldEdit       = weCL.loadClass("com.sk89q.worldedit.WorldEdit");
@@ -127,6 +130,11 @@ public class SelectionTileGenerator {
             Class<?> clsWorld           = weCL.loadClass("com.sk89q.worldedit.world.World");
             Class<?> clsRegion          = weCL.loadClass("com.sk89q.worldedit.regions.Region");
             Class<?> clsBV3             = weCL.loadClass("com.sk89q.worldedit.math.BlockVector3");
+
+            // Extra classes / methods needed for creating & committing an EditSession
+            f_clsEditSession = weCL.loadClass("com.sk89q.worldedit.EditSession");
+            // BlockStateHolder is the erased parameter type of EditSession.setBlock(…)
+            f_clsBlockStateHolder = weCL.loadClass("com.sk89q.worldedit.world.block.BlockStateHolder");
 
             // WorldEdit.getInstance()
             Object weInstance = clsWorldEdit.getMethod("getInstance").invoke(null);
@@ -183,8 +191,21 @@ public class SelectionTileGenerator {
             maxX_val = (int) xM.invoke(maxPoint);
             maxZ_val = (int) zM.invoke(maxPoint);
 
+            // Store session & actor for later EditSession creation
+            f_session = session;
+            f_wePlayer = wePlayer;
+
+            // Store EditSession, BlockState related methods
+            // Note: EditSession.setBlock() has signature <B extends BlockStateHolder<B>> setBlock(BlockVector3, B)
+            // which at runtime erases to setBlock(BlockVector3, BlockStateHolder).
+            // Reflection getMethod() needs the erased type, NOT the concrete BlockState.
+            f_createEditSession = clsLocalSession.getMethod("createEditSession", clsActor);
+            f_setBlock = f_clsEditSession.getMethod("setBlock", clsBV3, f_clsBlockStateHolder);
+            f_flushSession = f_clsEditSession.getMethod("flushSession");
+            f_remember = clsLocalSession.getMethod("remember", f_clsEditSession);
+            f_adaptBlockData = clsBukkitAdapter.getMethod("adapt", org.bukkit.block.data.BlockData.class);
+
             // Store references needed for later reflection calls (after the try block)
-            // Store references needed for later calls (after the try block)
             f_clsRegion = clsRegion;
             f_clsBV3 = clsBV3;
             f_region = region;
@@ -223,10 +244,10 @@ public class SelectionTileGenerator {
         List<int[]> columns = new ArrayList<>();
         try {
             Method containsMethod = f_clsRegion.getMethod("contains", f_clsBV3);
-            Method atMethod = f_clsBV3.getMethod("at", int.class, int.class, int.class);
+            f_atMethod = f_clsBV3.getMethod("at", int.class, int.class, int.class);
             for (int wx = minX; wx <= maxX_val; wx++) {
                 for (int wz = minZ; wz <= maxZ_val; wz++) {
-                    Object vec = atMethod.invoke(null, wx, maxY, wz);
+                    Object vec = f_atMethod.invoke(null, wx, maxY, wz);
                     if ((boolean) containsMethod.invoke(f_region, vec)) {
                         columns.add(new int[]{wx, wz});
                     }
@@ -245,7 +266,7 @@ public class SelectionTileGenerator {
         Player finalPlayer = player;
         String finalUrlTemplate = urlTemplate;
         int finalZoom = zoom;
-        TileServerProjection finalProjection = projection;
+        TileCoordTranslator finalCoordTranslator = coordTranslator;
         double finalOffsetX = effOffsetX;
         double finalOffsetZ = effOffsetZ;
         String finalOrigBlockset = origBlockset;
@@ -274,7 +295,7 @@ public class SelectionTileGenerator {
                 }
 
                 // 2. Determine which tile this falls in
-                TilePosition tilePos = finalProjection.toTileCoordinates(geo[0], geo[1], finalZoom);
+                TilePosition tilePos = finalCoordTranslator.toTileCoordinates(geo[0], geo[1], finalZoom);
 
                 // 3. Get tile image (cache hit or download)
                 BufferedImage image = tileCache.get(tilePos);
@@ -289,9 +310,11 @@ public class SelectionTileGenerator {
                 }
 
                 // 4. Get pixel colour at the exact geographic coordinate
-                double[] coords = finalProjection.toDoubleTileCoordinates(geo[0], geo[1], finalZoom);
+                double[] coords = finalCoordTranslator.toDoubleTileCoordinates(geo[0], geo[1], finalZoom);
                 double fracX = coords[0] - tilePos.x;
                 double fracY = coords[1] - tilePos.y;
+                // invert_lat / flip_vert flip tiles vertically (XOR gate, matching BTETerraRenderer)
+                if (finalCoordTranslator.isInvertLatitude() ^ finalCoordTranslator.isFlipVertically()) fracY = 1 - fracY;
                 if (fracX < 0 || fracX > 1 || fracY < 0 || fracY > 1) {
                     tileErrors++;
                     continue;
@@ -322,20 +345,41 @@ public class SelectionTileGenerator {
                 }
             }
 
-            // --- Switch back to main thread for block placement ---
+            // --- Switch back to main thread for block placement via WE EditSession ---
             int finalTileErrors = tileErrors;
             List<Object[]> finalResults = results;
+            int finalMaxY = maxY;
             Bukkit.getScheduler().runTask(plugin, () -> {
+                // Create WorldEdit EditSession for undo/redo support
+                Object editSession;
+                try {
+                    editSession = f_createEditSession.invoke(f_session, f_wePlayer);
+                } catch (Exception e) {
+                    finalPlayer.sendMessage(ChatColor.RED + "Failed to create EditSession: " + e.getMessage());
+                    return;
+                }
+
                 int applied = 0;
                 for (Object[] entry : finalResults) {
                     int bx = (int) entry[0];
                     int bz = (int) entry[1];
                     Material mat = (Material) entry[2];
-                    org.bukkit.block.Block block = finalPlayer.getWorld().getBlockAt(bx, maxY, bz);
-                    if (block.getType() != mat) {
-                        block.setType(mat, false);
-                        applied++;
+                    try {
+                        Object weBlockState = f_adaptBlockData.invoke(null, mat.createBlockData());
+                        Object vec = f_atMethod.invoke(null, bx, finalMaxY, bz);
+                        boolean changed = (boolean) f_setBlock.invoke(editSession, vec, weBlockState);
+                        if (changed) applied++;
+                    } catch (Exception ignored) {
+                        // Skip individual block failures
                     }
+                }
+
+                // Commit & remember — this is what enables //undo / //redo
+                try {
+                    f_flushSession.invoke(editSession);
+                    f_remember.invoke(f_session, editSession);
+                } catch (Exception e) {
+                    LOGGER.warning("Failed to commit EditSession for " + finalPlayer.getName() + ": " + e);
                 }
 
                 // Restore original blockset if we temporarily switched

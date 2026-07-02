@@ -5,6 +5,7 @@ import com.mndk.tilemapper.config.PluginConfig;
 import com.mndk.tilemapper.config.TileSource;
 import com.mndk.tilemapper.processor.ChunkProcessor;
 import com.mndk.tilemapper.processor.SatelliteBlockPopulator;
+import com.mndk.tilemapper.tile.TileCoordTranslator;
 import com.mndk.tilemapper.tile.TilePosToUrlFunction;
 import com.mndk.tilemapper.tile.projection.WebMercatorTileProjection;
 import com.mndk.tilemapper.tile.server.TileServer;
@@ -112,8 +113,10 @@ public class TileMapper extends JavaPlugin implements Listener {
     private void initTileServerAndProcessors() {
         TileSource initSource = pluginConfig.getActiveSource();
         boolean initInvertLat = initSource != null && initSource.invertLat();
+        boolean initFlipVertically = initSource != null && initSource.flipVertically();
         this.tileServer = new TileServer(
-                new WebMercatorTileProjection(initInvertLat),
+                new TileCoordTranslator(
+                        new WebMercatorTileProjection(), initInvertLat, initFlipVertically),
                 buildUrlFunction(),
                 pluginConfig.getMaxConcurrentRequests(),
                 pluginConfig.getCacheSize()
@@ -202,11 +205,13 @@ public class TileMapper extends JavaPlugin implements Listener {
             tileServer.getExecutorService().shutdown();
         }
 
-        // Rebuild TileServer with new URL function (per-source invertLat)
+        // Rebuild TileServer with new URL function (per-source invertLat & flipVertically)
         TileSource switchSource = pluginConfig.getActiveSource();
         boolean switchInvertLat = switchSource != null && switchSource.invertLat();
+        boolean switchFlipVertically = switchSource != null && switchSource.flipVertically();
         this.tileServer = new TileServer(
-                new WebMercatorTileProjection(switchInvertLat),
+                new TileCoordTranslator(
+                        new WebMercatorTileProjection(), switchInvertLat, switchFlipVertically),
                 buildUrlFunction(),
                 pluginConfig.getMaxConcurrentRequests(),
                 pluginConfig.getCacheSize()
@@ -214,7 +219,7 @@ public class TileMapper extends JavaPlugin implements Listener {
         this.processor.setTileServer(this.tileServer);
 
         getLogger().info("Switched to tile source: " + name
-                + " (invertLat=" + switchInvertLat + ")");
+                + " (invertLat=" + switchInvertLat + ", flipVertically=" + switchFlipVertically + ")");
         return true;
     }
 

@@ -3,7 +3,7 @@ package com.mndk.tilemapper.tile.server;
 import com.mndk.tilemapper.tile.TileImageData;
 import com.mndk.tilemapper.tile.TilePosToUrlFunction;
 import com.mndk.tilemapper.tile.TilePosition;
-import com.mndk.tilemapper.tile.projection.TileServerProjection;
+import com.mndk.tilemapper.tile.TileCoordTranslator;
 import com.mndk.tilemapper.util.Bounds2d;
 import com.mndk.tilemapper.util.MemoryCache;
 import lombok.Getter;
@@ -26,15 +26,15 @@ import java.util.concurrent.Executors;
 @Getter
 public class TileServer {
 
-    private final TileServerProjection projection;
+    private final TileCoordTranslator coordTranslator;
     private final TilePosToUrlFunction urlFunction;
     private final ExecutorService executorService;
     private final MemoryCache<TilePosition, BufferedImage> cache;
     private final HttpClient httpClient;
 
-    public TileServer(TileServerProjection projection, TilePosToUrlFunction urlFunction,
+    public TileServer(TileCoordTranslator coordTranslator, TilePosToUrlFunction urlFunction,
                       int maximumConcurrentRequests, int cacheSize) {
-        this.projection = projection;
+        this.coordTranslator = coordTranslator;
         this.urlFunction = urlFunction;
         this.executorService = Executors.newFixedThreadPool(maximumConcurrentRequests);
         this.cache = new MemoryCache<>(cacheSize);
@@ -77,7 +77,7 @@ public class TileServer {
      * Fetch a tile image by geographic coordinates.
      */
     public CompletableFuture<TileImageData> fetch(double lon, double lat, int zoom) {
-        TilePosition pos = this.projection.toTileCoordinates(lon, lat, zoom);
+        TilePosition pos = this.coordTranslator.toTileCoordinates(lon, lat, zoom);
         return this.fetch(pos);
     }
 
@@ -85,7 +85,7 @@ public class TileServer {
      * Fetch all intersecting tiles for a given bounds asynchronously.
      */
     public CompletableFuture<TileImageData[]> fetchAllAsync(Bounds2d bounds2d, int zoom) {
-        TilePosition[] posList = this.projection.getAllIntersecting(bounds2d, zoom);
+        TilePosition[] posList = this.coordTranslator.getAllIntersecting(bounds2d, zoom);
         List<CompletableFuture<TileImageData>> futures = new ArrayList<>();
         for (TilePosition pos : posList) {
             futures.add(this.fetch(pos));

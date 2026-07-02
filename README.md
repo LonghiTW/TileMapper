@@ -57,9 +57,32 @@ Output: `target/tilemapper-1.1.0.jar` (~428 KB, shaded with Gson + bStats).
 | `/tsm source <name>` | `tilemapper.admin` | Switch to a different tile source on the fly |
 | `/tsm blocksets` | `tilemapper.admin` | List all available blockset files |
 | `/tsm blockset <name>` | `tilemapper.admin` | Switch to a different blockset |
+| `/tsm generate [blockset] [source] [xoffset zoffset]` | `tilemapper.player` | Generate map-tile blocks inside your WorldEdit selection |
 | `/tsm reload` | `tilemapper.admin` | Hot-reload `config.yml` without restarting |
 
 By default, server operators (OP) have the `tilemapper.admin` permission.
+
+### `/tsm generate`
+
+`/tsm generate` fills the top Y level of your current WorldEdit/FAWE selection with blocks matched from the configured map tiles. It is intended for manual, on-demand tile placement and supports WorldEdit undo/redo.
+
+All arguments are optional:
+
+```text
+/tsm generate [blockset] [source] [xoffset zoffset]
+```
+
+- `blockset` — blockset to use for this generation only. Defaults to the active blockset.
+- `source` — tile source to use for this generation only. Defaults to the active source.
+- `xoffset zoffset` — temporary block-coordinate tile offset. Both values must be provided together.
+
+Examples:
+
+```text
+/tsm generate
+/tsm generate Default osm
+/tsm generate Default tw -0.625 0.3125
+```
 
 ---
 

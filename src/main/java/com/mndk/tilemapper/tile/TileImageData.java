@@ -145,8 +145,10 @@ public class TileImageData {
 
 
     public RGBColorDouble getRGBByGeoCoordinate(double lon, double lat) {
-        double[] coordinates = parent.getProjection().toDoubleTileCoordinates(lon, lat, pos.zoom);
+        double[] coordinates = parent.getCoordTranslator().toDoubleTileCoordinates(lon, lat, pos.zoom);
         double x = coordinates[0] - pos.x, y = coordinates[1] - pos.y;
+        // invert_lat / flip_vert flip tiles vertically (XOR gate, matching BTETerraRenderer)
+        if (parent.getCoordTranslator().isInvertLatitude() ^ parent.getCoordTranslator().isFlipVertically()) y = 1 - y;
         return getRGB_bicubic(x, y);
     }
 

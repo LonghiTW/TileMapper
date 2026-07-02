@@ -55,8 +55,9 @@ public class PluginConfig {
                 double oz = sourcesSection.getDouble(key + ".offset.z", 0);
                 boolean invertZoom = sourcesSection.getBoolean(key + ".invert_zoom", false);
                 boolean invertLat = sourcesSection.getBoolean(key + ".invert_lat", false);
+                boolean flipVertically = sourcesSection.getBoolean(key + ".flip_vert", false);
                 if (url != null && !url.isEmpty()) {
-                    tileSources.put(key, new TileSource(url, zoom, ox, oz, invertZoom, invertLat));
+                    tileSources.put(key, new TileSource(url, zoom, ox, oz, invertZoom, invertLat, flipVertically));
                 }
             }
         }

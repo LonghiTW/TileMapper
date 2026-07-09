@@ -17,9 +17,9 @@ Seamlessly integrates with [TerraPlusMinus](https://github.com/BTE-Germany/Terra
 
 ## Requirements
 
-- **Paper 1.21.8+** server
+- **Paper 1.21.8+** server (requires Java 21+)
 - **TerraPlusMinus** plugin (v1.6.1 or later required)
-- **Java 21+**
+- **WorldEdit** or **FastAsyncWorldEdit** plugin (required for `/tsm generate`)
 
 ---
 

@@ -247,7 +247,7 @@ DEFAULT_PALETTES = [
             'chiseled_tuff$', 'command_block.png', 'commandBlock.png',
             'composter_bottom.png', 'crafter_$', 'crafting_table_$',
             'creaking_$', 'daylight_detector$', 'daylightDetector$',
-            'deepslate.png', 'dispenser_front$', 'farmland.png',
+            'deepslate.png', 'dispenser_front$', 'dried_kelp$', 'farmland.png',
             'farmland$', 'flowering$', 'frosted_ice$', 'furnace_$',
             'glass$', 'glowstone.png', 'honey_block$', 'ice.png',
             'jack_o_lantern.png', 'lodestone$', 'loom$', 'magma.png',
@@ -255,7 +255,7 @@ DEFAULT_PALETTES = [
             'noteblock.png', 'observer$', 'polished_basalt_$',
             'powder_snow.png', 'piston$', 'pumpkin_face$',
             'pumpkin_jack.png', 'redstone_lamp$', 'redstoneLight$',
-            'reinforced_deepslate$', 'respawn_anchor$', 'sculk_catalyst$',
+            'reinforced_deepslate$', 'respawn_anchor$', 'sculk$',
             'sea_lantern.png', 'shroomlight.png', 'slime$',
             'smithing_table_$', 'smoker$', 'stonecutter$', 'target$',
             'tinted_glass.png', 'tnt$', 'warped_stem.png', 'workbench$',
@@ -1115,7 +1115,7 @@ def main():
     if blockid_map:
         resolved = sum(
             1 for entry in blockdata_all
-            if isinstance(entry, dict) and entry.get('blockId')
+            if isinstance(entry, dict) and entry.get('id')
         )
         total_data = sum(
             1 for entry in blockdata_all if isinstance(entry, dict)

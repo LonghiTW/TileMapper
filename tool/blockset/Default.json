@@ -1677,24 +1677,6 @@
     ]
   },
   {
-    "name": "Dried Kelp Top",
-    "texture": "dried_kelp_top.png",
-    "id": "dried_kelp_block",
-    "rgb": [
-      64,
-      69,
-      51
-    ],
-    "lab": [
-      "0.38017754641091688894",
-      "-0.01526592899164205819",
-      "0.02596488368825383697"
-    ],
-    "sides": [
-      "top"
-    ]
-  },
-  {
     "name": "Dripstone Block",
     "texture": "dripstone_block.png",
     "id": "dripstone_block",
@@ -4347,29 +4329,6 @@
       "0.87233238365762422184",
       "-0.00798424421318005839",
       "0.05824394354698325671"
-    ],
-    "sides": [
-      "top",
-      "bottom",
-      "north",
-      "south",
-      "east",
-      "west"
-    ]
-  },
-  {
-    "name": "Sculk",
-    "texture": "sculk.png",
-    "id": "sculk",
-    "rgb": [
-      13,
-      39,
-      45
-    ],
-    "lab": [
-      "0.25540868459303750493",
-      "-0.02742031268940026134",
-      "-0.01926181925854336674"
     ],
     "sides": [
       "top",

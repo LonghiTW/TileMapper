@@ -81,7 +81,7 @@ Examples:
 ```text
 /tsm generate
 /tsm generate Default osm
-/tsm generate Default tw -0.625 0.3125
+/tsm generate Default taiwan -0.625 0.3125
 ```
 
 ---

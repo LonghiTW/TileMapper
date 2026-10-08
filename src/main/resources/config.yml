@@ -23,7 +23,7 @@ tile_sources:
     offset:
       x: 0
       z: 0
-  tw:
+  taiwan:
     url: "https://wmts.nlsc.gov.tw/wmts/PHOTO2/default/GoogleMapsCompatible/{z}/{y}/{x}.png"
     zoom: 20
     offset:

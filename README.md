@@ -44,7 +44,7 @@ mvn clean package    # requires JDK 21+
 
 > **Note:** The setup script downloads TerraPlusMinus JAR into `libs/`. This file is tracked in Git so contributors don't need extra steps.
 
-Output: `target/tilemapper-1.1.0.jar` (~428 KB, shaded with Gson + bStats).
+Output: `target/tilemapper-1.2.0.jar` (~403 KB, shaded with Gson + bStats).
 
 ---
 

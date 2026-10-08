@@ -70,6 +70,50 @@ public class OklabColor {
         return dl * dl + da * da + db * db;
     }
 
+    /**
+     * Chroma in the Oklch polar representation.
+     */
+    public double chroma() {
+        return Math.sqrt(a * a + b * b);
+    }
+
+    /**
+     * Hue angle in radians in the Oklch polar representation.
+     *
+     * <p>For neutral colours (C == 0) the hue is mathematically undefined.
+     * Returning 0 keeps downstream calculations deterministic; chord-distance
+     * hue error is still 0 when either chroma is 0.</p>
+     */
+    public double hueRadians() {
+        return Math.atan2(b, a);
+    }
+
+    /**
+     * Squared angular/chord component of Oklab a-b distance.
+     *
+     * <p>For two Oklch colours, the a-b Euclidean distance decomposes as:
+     * {@code (C1 - C2)^2 + deltaH2(C1, h1, C2, h2)}.</p>
+     */
+    public double deltaH2(OklabColor other) {
+        return deltaH2(chroma(), hueRadians(), other.chroma(), other.hueRadians());
+    }
+
+    /**
+     * Squared angular/chord component between two Oklch colours.
+     */
+    public static double deltaH2(double chroma1, double hue1, double chroma2, double hue2) {
+        if (chroma1 <= 0.0 || chroma2 <= 0.0) return 0.0;
+
+        double dh = Math.abs(hue1 - hue2);
+        if (dh > Math.PI) {
+            dh = (2.0 * Math.PI) - dh;
+        }
+
+        double sin = Math.sin(dh * 0.5);
+        double deltaH = 2.0 * Math.sqrt(chroma1 * chroma2) * sin;
+        return deltaH * deltaH;
+    }
+
     // ========== sRGB gamma helpers ==========
 
     /**

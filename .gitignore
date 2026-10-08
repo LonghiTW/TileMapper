@@ -24,6 +24,7 @@ out/
 ### Project ###
 .reference/
 .wiki/
+docs/
 
 ### IDE - Eclipse ###
 .classpath
@@ -56,3 +57,10 @@ replay_pid*
 
 ### Logs ###
 *.log
+
+### Python ###
+__pycache__/
+*.pyc
+
+### Dev tools ###
+dev/

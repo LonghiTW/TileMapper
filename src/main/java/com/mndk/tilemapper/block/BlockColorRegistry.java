@@ -59,8 +59,29 @@ public class BlockColorRegistry {
     /** Threshold for the lab-vs-rgb sanity check (Euclidean distance in Oklab). */
     private static final double LAB_SANITY_THRESHOLD = 0.01;
 
-    /** Mapping from OklabColor ??Material */
-    private static final List<Map.Entry<OklabColor, Material>> colorMappings = new ArrayList<>();
+    /**
+     * Total (upper-bound) coefficient applied to the ΔH² term once the target
+     * chroma reaches {@link #HUE_FULL_WEIGHT_CHROMA}. The ΔH² term always keeps
+     * a baseline coefficient of 1.0 (pure Oklab chord decomposition), and the
+     * hue-identity boost {@link #computeHueWeight(double)} adds
+     * {@code HUE_WEIGHT - 1.0} on top of it. This keeps low-chroma (e.g. dark
+     * grey) targets faithful to the original Oklab distance instead of dropping
+     * the hue-direction term entirely.
+     */
+    private static final double HUE_WEIGHT = 2.0;
+    private static final double ANTI_GRAY_START = 0.015;
+    private static final double HUE_ONSET = 0.04;
+    private static final double HUE_FULL_WEIGHT_CHROMA = 0.06;
+    private static final double SCORE_EPSILON = 1.0e-15;
+
+    /** Mapping from Oklab/Oklch colour data to Material. */
+    private static final List<BlockColorCandidate> colorMappings = new ArrayList<>();
+
+    private record BlockColorCandidate(OklabColor lab, double chroma, double hue, Material material) {
+        private BlockColorCandidate(OklabColor lab, Material material) {
+            this(lab, lab.chroma(), lab.hueRadians(), material);
+        }
+    }
 
     private static boolean initialized = false;
     private static String currentBlocksetName = null;
@@ -259,7 +280,7 @@ public class BlockColorRegistry {
                 continue;
             }
 
-            colorMappings.add(new AbstractMap.SimpleEntry<>(oklab, material));
+            colorMappings.add(new BlockColorCandidate(oklab, material));
             loaded++;
         }
 
@@ -371,10 +392,13 @@ public class BlockColorRegistry {
     /**
      * Find the Material whose colour best matches the given RGB value.
      *
-     * <p>Normally uses full Oklab Euclidean distance for perceptually uniform
-     * comparison. When the active blockset is {@code "Grayscale"}, only the
-     * L (lightness) component is compared — this turns the matcher into a
-     * pure luminance quantizer, independent of the input hue.</p>
+     * <p>For neutral targets ({@code targetChroma < ANTI_GRAY_START}) uses plain
+     * Oklab Euclidean distance (P0 compatibility). For coloured targets uses the
+     * hue-weighted unified score
+     * {@code ΔL² + ΔC² + W_H(C_t)·ΔH²} (§3.2 of the colour-matching plan) to
+     * preserve hue identity. When the active blockset is {@code "Grayscale"},
+     * only the L (lightness) component is compared — this turns the matcher
+     * into a pure luminance quantizer, independent of the input hue.</p>
      *
      * @param rgb RGB colour as int (0xRRGGBB)
      * @return the closest matching Material, or null if no mappings loaded
@@ -383,32 +407,102 @@ public class BlockColorRegistry {
         if (colorMappings.isEmpty()) return null;
 
         OklabColor targetColor = new OklabColor(new RGBColorDouble(rgb));
+        double targetChroma = targetColor.chroma();
+
+        if (targetChroma < ANTI_GRAY_START) {
+            return getNearestBlockLegacy(targetColor);
+        }
+
+        double targetHue = targetColor.hueRadians();
 
         double minDistance = Double.POSITIVE_INFINITY;
         Material result = null;
 
         if (luminanceOnly) {
             // Pure L-only matching — ignores a,b differences
-            for (Map.Entry<OklabColor, Material> entry : colorMappings) {
-                double dl = targetColor.l - entry.getKey().l;
+            for (BlockColorCandidate candidate : colorMappings) {
+                double dl = targetColor.l - candidate.lab.l;
                 double distance = dl * dl;
-                if (distance < minDistance) {
+                if (isBetterCandidate(distance, candidate.material, minDistance, result)) {
                     minDistance = distance;
-                    result = entry.getValue();
+                    result = candidate.material;
                 }
             }
         } else {
             // Full Oklab Euclidean distance
-            for (Map.Entry<OklabColor, Material> entry : colorMappings) {
-                double distance = targetColor.distanceSq(entry.getKey());
-                if (distance < minDistance) {
+            for (BlockColorCandidate candidate : colorMappings) {
+                double dl = targetColor.l - candidate.lab.l;
+                double dc = targetChroma - candidate.chroma;
+                double dH2 = OklabColor.deltaH2(targetChroma, targetHue, candidate.chroma, candidate.hue);
+                double distance = computeScore(dl * dl, dc * dc, dH2, targetChroma);
+                if (isBetterCandidate(distance, candidate.material, minDistance, result)) {
                     minDistance = distance;
-                    result = entry.getValue();
+                    result = candidate.material;
                 }
             }
         }
 
         return result;
+    }
+
+    private static Material getNearestBlockLegacy(OklabColor targetColor) {
+        double minDistance = Double.POSITIVE_INFINITY;
+        Material result = null;
+
+        if (luminanceOnly) {
+            for (BlockColorCandidate candidate : colorMappings) {
+                double dl = targetColor.l - candidate.lab.l;
+                double distance = dl * dl;
+                if (isBetterCandidate(distance, candidate.material, minDistance, result)) {
+                    minDistance = distance;
+                    result = candidate.material;
+                }
+            }
+        } else {
+            for (BlockColorCandidate candidate : colorMappings) {
+                double distance = targetColor.distanceSq(candidate.lab);
+                if (isBetterCandidate(distance, candidate.material, minDistance, result)) {
+                    minDistance = distance;
+                    result = candidate.material;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    static double computeScore(double dL2, double dC2, double dH2, double targetChroma) {
+        return dL2 + dC2 + (1.0 + computeHueWeight(targetChroma)) * dH2;
+    }
+
+    static double computeBaseScore(double dL2, double dC2, double dH2) {
+        return dL2 + dC2 + dH2;
+    }
+
+    static double computeHueWeight(double targetChroma) {
+        return (HUE_WEIGHT - 1.0) * ramp(targetChroma, HUE_ONSET, HUE_FULL_WEIGHT_CHROMA);
+    }
+
+    private static double ramp(double value, double start, double end) {
+        return clamp((value - start) / (end - start));
+    }
+
+    private static double clamp(double value) {
+        if (value < 0.0) return 0.0;
+        if (value > 1.0) return 1.0;
+        return value;
+    }
+
+    private static boolean isBetterCandidate(double score, Material candidate, double bestScore, Material best) {
+        return isBetterCandidate(score, candidate.getKey().toString(),
+                bestScore, best == null ? null : best.getKey().toString());
+    }
+
+    static boolean isBetterCandidate(double score, String candidateKey, double bestScore, String bestKey) {
+        if (score < bestScore - SCORE_EPSILON) return true;
+        if (bestKey == null) return true;
+        if (Math.abs(score - bestScore) > SCORE_EPSILON) return false;
+        return candidateKey.compareTo(bestKey) < 0;
     }
 
     /** Returns the name of the currently loaded blockset. */
